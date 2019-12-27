@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group = 'pl.natusiek.grouptp'
+version = '1.0'
+
+repositories {
+    maven {
+        url "https://maven.sk89q.com/repo/"
+    }
+    maven {
+        url 'http://maven.xtr3m3k.net/'
+    }
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly 'fr.minuskube.inv:smart-invs:1.2.7'
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'org.github.paperspigot:paperspigot:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'org.github.paperspigot:paperspigot-api:1.8.8-R0.1-SNAPSHOT'
+    compileOnly 'com.sk89q.worldedit:worldedit-bukkit:6.1'
+}

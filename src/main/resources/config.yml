@@ -1,0 +1,9 @@
+blocks:
+  button: STONE_BUTTON
+  base: JUKE_BOX
+connect:
+  server: lobby
+arenas:
+  Arena1:
+    location: world;0.6;90.5;0.3
+    size: 30
