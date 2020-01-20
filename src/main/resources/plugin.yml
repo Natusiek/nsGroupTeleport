@@ -1,0 +1,10 @@
+name: nsGroupTeleport
+version: 1.0
+main: pl.natusiek.grouptp.GroupTeleportPlugin
+authors: [Natusiek]
+description: Tryb grupowe teleport
+
+commands:
+  kit:
+  setarena:
+  createkit:
