@@ -54,28 +54,6 @@ public final class MessageHelper {
 		craftPlayer.getHandle().playerConnection.sendPacket(bar);
 	}
 
-	public static void TeleportPlayerToServer(Player player, String server) {
-		final ByteArrayOutputStream b = new ByteArrayOutputStream();
-		final DataOutputStream output = new DataOutputStream(b);
-		final Plugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
-
-		//Nie realny lag gierki XD
-		player.sendMessage(colored(MessagesConfig.BUNGEE$MESSAGE_LEAVE));
-		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			try {
-				output.writeUTF("Connect");
-				output.writeUTF(server);
-			} catch (IOException ex) {
-				ex.printStackTrace();
-				player.sendMessage(colored("&4Upss, coś sie zespuło: &f" + ex.getMessage()));
-
-			} finally {
-				player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
-				player.sendMessage(colored(MessagesConfig.BUNGEE$CONNECT_SERVER.replace("{SERVER}", server)));
-			}
-		}, 20L);
-	}
-
 	private MessageHelper() {
 	}
 }

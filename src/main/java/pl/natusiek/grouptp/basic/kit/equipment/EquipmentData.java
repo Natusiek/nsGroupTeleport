@@ -1,5 +1,6 @@
 package pl.natusiek.grouptp.basic.kit.equipment;
 
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;

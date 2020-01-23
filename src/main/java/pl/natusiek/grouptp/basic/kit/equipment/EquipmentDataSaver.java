@@ -1,18 +1,19 @@
 package pl.natusiek.grouptp.basic.kit.equipment;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.basic.kit.KitManager;
 import pl.natusiek.grouptp.basic.kit.impl.KitImpl;
 import pl.natusiek.grouptp.helper.Serializer;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
 
 public class EquipmentDataSaver {
 
@@ -44,6 +45,7 @@ public class EquipmentDataSaver {
             config.set("icon", data.getIcon());
             config.set("inventory", Serializer.serializeInventory(data.getContent()));
             config.set("armor", Serializer.serializeInventory(data.getArmorContent()));
+
             try {
                 config.save(file);
                 this.kitManager.addKit(new KitImpl(data.getName(), data.getRows(), data.getColumn(), data.getIcon(), data.getContent(), data.getArmorContent()));
@@ -51,6 +53,15 @@ public class EquipmentDataSaver {
                 e.printStackTrace();
             }
         });
+    }
+
+    public void delete(String name) {
+            final File file = new File(this.dir, name + ".yml");
+            if (file.exists()) {
+                file.delete();
+            } else {
+                plugin.getLogger().info("Nie ma takiego kitu ;c ");
+            }
     }
 
     public void load() {

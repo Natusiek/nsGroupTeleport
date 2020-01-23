@@ -1,7 +1,9 @@
 package pl.natusiek.grouptp.config;
 
+import org.bukkit.inventory.ItemStack;
 import pl.natusiek.grouptp.config.system.ConfigExtender;
 import pl.natusiek.grouptp.config.system.Configuration;
+import pl.natusiek.grouptp.helper.ItemBuilder;
 
 public class MessagesConfig extends ConfigExtender {
 
@@ -15,7 +17,6 @@ public class MessagesConfig extends ConfigExtender {
   public static String ARENA$CANNOT_JOIN$NO_PLAYERS_IN_RADIUS = "&4Sory, &c ale brak graczy w poblizu lub nie maja tego samego zestawu!";
   public static String ARENA$CANNOT_USE_PEARL_OUTSIDE_BORDER = "&4Co ty taki Stiv? &cale nie wyrzucamy perel za border!";
 
-  public static String ARENA$COMPASS$FEW_PEOPLE = "&fZa malo osob zeby sprawdzac lokalizacje.";
   public static String ARENA$COMPASS$COOLDOWN = "&cPoczekaj &f{TIME} &faby, uzyc kolejny raz! ";
   public static String ARENA$COMPASS$NO_FOUND_PLAYER = "&aNie znaleziono gracza w twoim poblizu.";
   public static String ARENA$COMPASS$NEAREST_PLAYER = "&aNajblizszy gracz: &f{RESULT} &aw odleglosci: &f{DISTANCE}";
@@ -39,17 +40,18 @@ public class MessagesConfig extends ConfigExtender {
 
   public static String COMMAND$NO_PERMISSION = "&4Upsik, ale nie masz permisji.";
   public static String COMMAND$NO_INT = "&4Upsik, podany argument nie jest liczba";
-  public static String COMMAND$CREATE_KIT$USE = "&4Uzycie: &f/createkit (name) (rows number) (column number)";
-  public static String COMMAND$CREATE_KIT$CREATED = "&fUtowrzyles kit o nazwie: &6{KIT}";
-  public static String COMMAND$CREATE_KIT$ITEM_AIR = "&fNie trzymasz nic w rece.";
+
+  public static String COMMAND$ADMIN_KIT$USE = "&4Uzycie: &f/adminkit (create/delete) (name) (rows number) (column number)";
+  public static String COMMAND$ADMIN_KIT$CREATED = "&fUtowrzyles kit o nazwie: &6{KIT}";
+  public static String COMMAND$ADMIN_KIT$ITEM_AIR = "&fNie trzymasz nic w rece.";
+  public static String COMMAND$ADMIN_KIT$DELETE = "&fKit zostal usuniety";
 
   public static String COMMAND$SET_ARENA$USE = "&4Uzycie: &f/setarena (name) (size)";
   public static String COMMAND$SET_ARENA$ADD = "&4fArena zostala dodana pomyslnie";
 
   public static String KIT$USE = "&4Stuku puku &c,ale masz juz kit!";
   public static String KIT$TAKE = "&7Wybrales kit: &6{KIT}";
-  public static String KIT$DONT_USE = "&4Co ty bez seta na bitke? Wybierz kit i dopiero idz!";
+  public static String KIT$DONT_HAVE_KIT = "&4Co ty bez seta na bitke? Wybierz kit i dopiero idz!";
   public static String KIT$BLOCK_CHANGE_KIT = "&4Ej! Ej! Ej! &cBedziesz sprawiedliwy wobec innych osob?";
-
 
 }

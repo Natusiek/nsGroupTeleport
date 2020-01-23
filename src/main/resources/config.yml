@@ -1,14 +1,48 @@
+spawn:
+  location: world, 0.0, 80.0, 0.0, 0.0f, 0.0f
+items:
+  kits:
+    material: BOOK
+    name: "&8* &fWybor zestawu &8*"
+  spectator:
+    material: PAPER
+    name: "&8* &fObserwuj areny &8*"
+  leave-server:
+    material: WOOD_BUTTON
+    name: "&8* &fOpusc serwer &8*"
+  leave-spectator:
+    material: NAME_TAG
+    name: "&8* &fOpusc obserwowanie areny &8*"
+  compass:
+    material: COMPASS
+    name: "&8 &fZnajdz pierwszego gracza &8*"
 blocks:
   button: STONE_BUTTON
   base: JUKE_BOX
-connect:
-  server: lobby
+gui:
+  kit:
+    name: "&7Wybierz swoj kit"
+    rows: 1
+    column: 3
+    itemResetKit:
+      material: HOPPER
+      name: "&8* &fZresetuj swoj kit &8*"
+  spectator:
+    name: "&7Lista wszystkich aren"
+    rows: 1
+    column: 4
+    itemArenaOpen:
+      material: WOOL
+      name: " &8(&2ON&8) &7Arena: &f{ARENA}"
+      data: 5
+      lore:
+        - "&7Lista: "
+        - " &8* &f{PLAYERS}"
+    itemArenaClose:
+      material: WOOL
+      name: " &8(&4OFF&8) &7Arena: &f{ARENA}"
+      data: 14
 arenas:
   Arena1:
     location: world;0.6;90.5;0.3
     size: 30
-
-kits:
-  BIRD:
-    location: world;0.6;90.5;0.3
-    size: 10

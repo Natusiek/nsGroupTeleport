@@ -4,22 +4,44 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+
 public final class LocationHelper {
-	
-	public static String toString(Location location) { 
-		return location.getWorld().getName() + ";" + location.getX() + ";" + location.getY() + ";" + location.getZ();
+
+	private final World world;
+	private final double x;
+	private final double y;
+	private final double z;
+	private final float yaw;
+	private final float pitch;
+
+	private LocationHelper(World world, double x, double y, double z, float yaw, float pitch) {
+		this.world = world;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.yaw = yaw;
+		this.pitch = pitch;
+	}
+
+	public Location toLocation() {
+		return new Location(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
 	}
 	
-	public static Location fromString(String string) {
-		final String[] parts = string.split(";");
+	public static LocationHelper fromString(String string) {
+		final String[] parts = string.split(", ");
+
 		final World world = Bukkit.getWorld(parts[0]);
 		final double x = Double.parseDouble(parts[1]);
 		final double y = Double.parseDouble(parts[2]);    
 		final double z = Double.parseDouble(parts[3]);
-		return new Location(world, x, y, z);
+		final float yaw = Float.parseFloat(parts[4]);
+		final float pitch = Float.parseFloat(parts[5]);
+
+		return new LocationHelper(world, x, y, z, yaw, pitch);
 	}
-	
-	private LocationHelper() {
+
+	public static LocationHelper toString(Location location) {
+		return new LocationHelper(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 	}
-	
+
 }

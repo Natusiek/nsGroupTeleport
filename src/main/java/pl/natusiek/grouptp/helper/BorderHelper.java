@@ -14,7 +14,7 @@ import pl.natusiek.grouptp.basic.arena.GameArena;
 
 public final class BorderHelper {
 
-	public static void setBorder(GameArena arena, Player player, Location center, int radius) {
+	public static void setBorder(GameArena arena, Player player, LocationHelper center, int radius) {
 		final WorldBorder border = arena.setBorder(player.getUniqueId(), center, radius);
 
 		final Packet setSize = new PacketPlayOutWorldBorder(border, EnumWorldBorderAction.SET_SIZE);

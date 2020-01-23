@@ -14,10 +14,10 @@ public interface GameSpectate {
 
     void leaveSpectate(Player player);
 
-    List<UUID> getPlayers();
+    void addSpectetor(UUID uuid);
+
+    void removeSpectetor(UUID uuid);
 
     boolean isPlaying(UUID uuid);
-
-    WorldBorder setBorder(UUID uuid, Location center, int size);
 
 }

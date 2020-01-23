@@ -21,10 +21,10 @@ import com.sk89q.worldedit.world.registry.WorldData;
 
 public final class SchematicHelper {
 
-    public static void pasteSchematic(File schematicFile, Location location, boolean withAir) {
+    public static void pasteSchematic(File schematicFile, LocationHelper location, boolean withAir) {
         try {
-            Vector pasteLocation = new Vector(location.getX(), location.getY(), location.getZ());
-            World pasteWorld = new BukkitWorld(location.getWorld());
+            Vector pasteLocation = new Vector(location.toLocation().getX(), location.toLocation().getY(), location.toLocation().getZ());
+            World pasteWorld = new BukkitWorld(location.toLocation().getWorld());
             WorldData pasteWorldData = pasteWorld.getWorldData();
 
             Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(pasteWorldData);

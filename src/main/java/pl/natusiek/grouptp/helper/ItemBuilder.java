@@ -91,11 +91,11 @@ public class ItemBuilder {
                 builder.withType(material);
             }
         }
-        if (section.isList("lore")) {
-            builder.withLore(section.getStringList("lore"));
-        }
         if (section.isString("name")) {
             builder.withName(section.getString("name"));
+        }
+        if (section.isList("lore")) {
+            builder.withLore(section.getStringList("lore"));
         }
         if (section.isInt("amount")) {
             builder.withAmount(section.getInt("amount"));

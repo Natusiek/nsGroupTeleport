@@ -5,11 +5,14 @@ import java.util.UUID;
 
 import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Location;
+import pl.natusiek.grouptp.helper.LocationHelper;
 
 
 public interface GameArena {
 
   List<UUID> getPlayers();
+
+  List<UUID> getSpectetors();
 
   void addPlayer(UUID uuid);
 
@@ -19,9 +22,7 @@ public interface GameArena {
 
   String getName();
 
-  String getNames(List<GameArena> arenas);
-
-  Location getCenter();
+  LocationHelper getCenter();
 
   int getSize();
 
@@ -35,7 +36,7 @@ public interface GameArena {
 
   WorldBorder getBorder(UUID uuid);
 
-  WorldBorder setBorder(UUID uuid, Location center, int size);
+  WorldBorder setBorder(UUID uuid, LocationHelper center, int size);
 
   final class ArenaStates {
 

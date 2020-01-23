@@ -19,4 +19,11 @@ public class EquipmentDataManager {
         return data;
     }
 
+    public void deleteEquipmentData(String name) {
+        EquipmentData data = this.equipments.get(name);
+        if (data != null) {
+            this.equipments.remove(name);
+        }
+    }
+
 }

@@ -9,19 +9,18 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+
 import pl.natusiek.grouptp.basic.arena.GameArena;
 import pl.natusiek.grouptp.basic.arena.GameArenaManager;
 import pl.natusiek.grouptp.basic.spectate.GameSpectate;
-import pl.natusiek.grouptp.config.MessagesConfig;
 
-import static pl.natusiek.grouptp.helper.MessageHelper.colored;
+public class ProtectingGameListener implements Listener {
 
-public class PlayerProtectGameListener implements Listener {
 
     private final GameArenaManager arenaManager;
     private final GameSpectate gameSpectate;
 
-    public PlayerProtectGameListener(GameArenaManager arenaManager, GameSpectate gameSpectate) {
+    public ProtectingGameListener(GameArenaManager arenaManager, GameSpectate gameSpectate) {
         this.arenaManager = arenaManager;
         this.gameSpectate = gameSpectate;
     }
