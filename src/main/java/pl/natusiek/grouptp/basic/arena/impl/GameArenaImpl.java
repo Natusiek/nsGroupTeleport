@@ -74,6 +74,7 @@ public class GameArenaImpl implements GameArena {
                             entity instanceof Item && entity.getLocation().distance(this.center.toLocation()) < this.size + MessagesConfig.ARENA$RADIUS$REMOVE_ITEMS)
                     .forEach(Entity::remove);
             this.players.clear();
+            this.spectators.clear();
             SchematicHelper.pasteSchematic(this.schematicFile, this.center, true);
             this.state = ArenaStates.AVAILABLE;
         });
