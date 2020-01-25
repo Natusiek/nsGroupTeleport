@@ -50,7 +50,7 @@ public final class GroupTeleportPlugin extends JavaPlugin {
         this.getServer().getLogger().info("Dostepnych aren: " + this.arenaManager.getArenas().size());
         this.getServer().getLogger().info("Dostepnych kitow: " + this.kitManager.getKits().size());
 
-        this.getCommand("kit").setExecutor(new KitCommand(this.arenaManager));
+        this.getCommand("kita").setExecutor(new KitCommand(this.arenaManager));
         this.getCommand("setarena").setExecutor(new SetArenaCommand(this));
         this.getCommand("adminkit").setExecutor(new AdminKitCommand(this.dataManager, this.dataSaver));
 
