@@ -5,24 +5,23 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
-import pl.natusiek.grouptp.GroupTeleportPlugin;
-import pl.natusiek.grouptp.basic.kit.equipment.EquipmentData;
-import pl.natusiek.grouptp.basic.kit.equipment.EquipmentDataManager;
-import pl.natusiek.grouptp.basic.kit.equipment.EquipmentDataSaver;
-import pl.natusiek.grouptp.config.MessagesConfig;
 
-import java.io.File;
+import pl.natusiek.grouptp.config.MessagesConfig;
+import pl.natusiek.grouptp.game.kit.Kit;
+import pl.natusiek.grouptp.game.kit.KitDataSaver;
+import pl.natusiek.grouptp.game.kit.KitManager;
+import pl.natusiek.grouptp.game.kit.impl.KitImpl;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class AdminKitCommand implements CommandExecutor {
 
-    private final EquipmentDataSaver dataSaver;
-    private final EquipmentDataManager dataManager;
+    private final KitManager kitManager;
+    private final KitDataSaver dataSaver;
 
-    public AdminKitCommand(EquipmentDataManager dataManager, EquipmentDataSaver dataSaver) {
+    public AdminKitCommand(KitManager kitManager, KitDataSaver dataSaver) {
+        this.kitManager = kitManager;
         this.dataSaver = dataSaver;
-        this.dataManager = dataManager;
     }
 
     @Override
@@ -34,18 +33,12 @@ public class AdminKitCommand implements CommandExecutor {
                 player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$USE));
                 return false;
             }
-                String method = args[0];
+            String method = args[0];
             if (method.equalsIgnoreCase("create")) {
                 if (args.length > 3) {
-                    final EquipmentData data = this.dataManager.createEquipmentData(args[0]);
                     final PlayerInventory inventory = player.getInventory();
 
-                    if (player.getItemInHand() == null) {
-                        player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$ITEM_AIR));
-                        return false;
-                    }
-                    int rows;
-                    int column;
+                    int rows, column;
                     try {
                         rows = Integer.parseInt(args[2]);
                         column = Integer.parseInt(args[3]);
@@ -54,26 +47,26 @@ public class AdminKitCommand implements CommandExecutor {
                         player.sendMessage(colored(MessagesConfig.COMMAND$NO_INT));
                         return false;
                     }
-                    data.setName(args[1]);
-                    data.setRows(rows);
-                    data.setColumn(column);
-                    data.setIcon(player.getItemInHand());
-                    data.setContent(inventory.getContents());
-                    data.setArmorContent(inventory.getArmorContents());
-                    player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$CREATED).replace("{KIT}", args[0]));
-                    this.dataSaver.save();
+                    final Kit kit = this.kitManager.addKit(new KitImpl(args[1], rows, column, player.getItemInHand(), inventory.getContents(), inventory.getArmorContents()));
+                    kit.setName(args[1]);
+                    kit.setRows(rows);
+                    kit.setColumn(column);
+                    kit.setIcon(player.getItemInHand());
+                    kit.setContent(inventory.getContents());
+                    kit.setArmorContent(inventory.getArmorContents());
+                    player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$CREATED).replace("{KIT}", args[1]));
+                    this.dataSaver.save(kit.getName());
                     return true;
                 } else {
                     player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$USE));
                 }
             }
             if (method.equalsIgnoreCase("delete")) {
-                if (args.length > 1 ) {
-                    this.dataManager.deleteEquipmentData(args[1]);
+                if (args.length > 1) {
+                    final Kit kit = this.kitManager.findByName(args[1]);
                     this.dataSaver.delete(args[1]);
                     player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$DELETE));
-                } else {
-                    player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$USE));
+                    this.kitManager.deleteKit(new KitImpl(args[1], kit.getRows(), kit.getColumn(), kit.getIcon(), kit.getContent(), kit.getArmorContent()));
                 }
             }
         } else {
@@ -81,5 +74,6 @@ public class AdminKitCommand implements CommandExecutor {
         }
         return false;
     }
+
 
 }

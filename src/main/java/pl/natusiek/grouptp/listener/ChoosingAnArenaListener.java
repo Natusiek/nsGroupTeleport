@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,48 +15,43 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Button;
 
-import pl.natusiek.grouptp.GroupTeleportPlugin;
-import pl.natusiek.grouptp.basic.arena.GameArena;
-import pl.natusiek.grouptp.basic.arena.GameArenaManager;
-import pl.natusiek.grouptp.basic.gui.KitInventoryProvider;
-import pl.natusiek.grouptp.basic.kit.Kit;
-import pl.natusiek.grouptp.basic.kit.KitManager;
 import pl.natusiek.grouptp.config.MessagesConfig;
+import pl.natusiek.grouptp.game.arena.Arena;
+import pl.natusiek.grouptp.game.arena.ArenaManager;
+import pl.natusiek.grouptp.game.gui.KitInventoryProvider;
+import pl.natusiek.grouptp.game.kit.Kit;
+import pl.natusiek.grouptp.game.kit.KitManager;
 import pl.natusiek.grouptp.helper.BorderHelper;
+import pl.natusiek.grouptp.helper.ItemBuilder;
+import pl.natusiek.grouptp.helper.LocationHelper;
 import pl.natusiek.grouptp.helper.PlayerHelper;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class ChoosingAnArenaListener implements Listener {
 
-    private final GroupTeleportPlugin plugin;
     private final KitManager kitManager;
-    private final GameArenaManager arenaManager;
+    private final ArenaManager arenaManager;
 
     private final Map<UUID, Long> cooldown = new HashMap<>();
 
-    public ChoosingAnArenaListener(GroupTeleportPlugin plugin, GameArenaManager arenaManager, KitManager kitManager) {
-        this.plugin = plugin;
-        this.arenaManager = arenaManager;
+    private final static ItemStack leaveServer = new ItemBuilder(Material.FENCE_GATE).withName("&8* &cWyjscie z serwer'a &8*").build();
+    private final static ItemStack kitsOpenItem = new ItemBuilder(Material.BOOK).withName("&8* &6Wybor zestaw'u &8*").build();
+
+    public ChoosingAnArenaListener(KitManager kitManager, ArenaManager arenaManager) {
         this.kitManager = kitManager;
+        this.arenaManager = arenaManager;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
         final Player player = event.getPlayer();
 
         PlayerHelper.addItemFromLobby(player);
-        player.setFireTicks(0);
-        player.setHealth(20.0D);
-        player.setFoodLevel(20);
-        player.setFallDistance(0);
-        player.teleport(plugin.getConfigManager().getSpawnLocation());
-        player.setGameMode(GameMode.ADVENTURE);
+        this.kitManager.setCurrentKit(player.getUniqueId(), null);
         BorderHelper.setBorder(player, player.getLocation(), 1000000);
     }
 
@@ -66,31 +61,29 @@ public class ChoosingAnArenaListener implements Listener {
         if (item == null) return;
 
         final Player player = event.getPlayer();
-        if (plugin.getConfigManager().getItemLeaveServer().isSimilar(item)) {
+        if (leaveServer.isSimilar(item)) {
             PlayerHelper.TeleportPlayerToServer(player, MessagesConfig.BUNGEE$SERVER);
-        } else if (plugin.getConfigManager().getItemKits().isSimilar(item)) {
+        } else if (kitsOpenItem.isSimilar(item)) {
             KitInventoryProvider.INVENTORY.open(player);
         }
     }
+
     @EventHandler
-    public void choosingArena(PlayerInteractEvent event) {
+    public void onClick(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null) return;
 
         final Block clicked = event.getClickedBlock();
-        if (clicked.getType() == plugin.getConfigManager().getButton()) {
-
+        if (clicked.getType() == Material.WOOD_BUTTON) {
             final Button btn = (Button) clicked.getState().getData();
             final Block base = clicked.getRelative(btn.getAttachedFace());
-            if (base.getType() != plugin.getConfigManager().getBase()) return;
+
+            if (base.getType() != Material.JUKEBOX) return;
 
             final Player player = event.getPlayer();
-            if (this.cooldown.containsKey(player.getUniqueId())) {
-                long time = this.cooldown.get(player.getUniqueId());
-                if (time > System.currentTimeMillis()) {
-                    player.sendMessage(colored(MessagesConfig.ARENA$CANNOT_JOIN$COOLDOWN
-                    .replace("{TIME}", ""+TimeUnit.MILLISECONDS.toSeconds(time - System.currentTimeMillis()))));
-                    return;
-                }
+            if (this.cooldown.containsKey(player.getUniqueId())
+                    && this.cooldown.get(player.getUniqueId()) > System.currentTimeMillis()) {
+                player.sendMessage(colored(MessagesConfig.ARENA$CANNOT_JOIN$COOLDOWN));
+                return;
             }
             this.cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (MessagesConfig.ARENA$SEARCHING$COOLDOWN * 1000));
             final Kit kit = this.kitManager.getCurrentKit(player.getUniqueId());
@@ -98,15 +91,17 @@ public class ChoosingAnArenaListener implements Listener {
                 player.sendMessage(colored(MessagesConfig.KIT$DONT_HAVE_KIT));
                 return;
             }
-            final GameArena availableArena = this.arenaManager.getArenas()
+
+            final Arena availableArena = this.arenaManager.getArenas()
                     .stream()
-                    .filter(gameArena -> gameArena.getState() == GameArena.ArenaStates.AVAILABLE)
+                    .filter(arena -> arena.getState() == Arena.ArenaStates.AVAILABLE)
                     .findFirst()
                     .orElse(null);
             if (availableArena == null) {
                 player.sendMessage(colored(MessagesConfig.ARENA$CANNOT_JOIN$NO_AVAILABLE_ARENAS));
                 return;
             }
+
             final List<Player> inRadius = PlayerHelper.findPlayersInRadius(player,
                     MessagesConfig.ARENA$SEARCHING$RADIUS, MessagesConfig.ARENA$SEARCHING$MAX_PLAYERS)
                     .stream()
@@ -122,18 +117,6 @@ public class ChoosingAnArenaListener implements Listener {
             inRadius.stream().map(Player::getUniqueId).forEach(availableArena::addPlayer);
             availableArena.start();
         }
-    }
-
-    @EventHandler
-    public void WeatherChange(WeatherChangeEvent event) {
-        if (event.toWeatherState()) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onQuit(PlayerQuitEvent event) {
-        this.cooldown.remove(event.getPlayer().getUniqueId());
     }
 
 }

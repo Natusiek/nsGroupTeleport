@@ -1,10 +1,11 @@
 package pl.natusiek.grouptp.config.system;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public interface Configuration {
 

@@ -22,27 +22,9 @@ blocks:
 gui:
   kit:
     name: "&7Wybierz swoj kit"
-    rows: 1
-    column: 3
-    itemResetKit:
-      material: HOPPER
-      name: "&8* &fZresetuj swoj kit &8*"
   spectator:
     name: "&7Lista wszystkich aren"
-    rows: 1
-    column: 4
-    itemArenaOpen:
-      material: WOOL
-      name: " &8(&2ON&8) &7Arena: &f{ARENA}"
-      data: 5
-      lore:
-        - "&7Lista: "
-        - " &8* &f{PLAYERS}"
-    itemArenaClose:
-      material: WOOL
-      name: " &8(&4OFF&8) &7Arena: &f{ARENA}"
-      data: 14
 arenas:
   Arena1:
-    location: world;0.6;90.5;0.3
     size: 30
+    location: "world, 100.0, 80.0, 100.0, 2.0f, 2.0f"

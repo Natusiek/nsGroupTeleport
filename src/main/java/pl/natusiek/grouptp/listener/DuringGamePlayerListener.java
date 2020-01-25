@@ -1,14 +1,13 @@
 package pl.natusiek.grouptp.listener;
 
-import java.text.DecimalFormat;
-
+import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.Event.Result;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -18,21 +17,20 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-import pl.natusiek.grouptp.basic.arena.GameArena;
-import pl.natusiek.grouptp.basic.arena.GameArenaManager;
-import pl.natusiek.grouptp.basic.spectate.GameSpectate;
 import pl.natusiek.grouptp.config.MessagesConfig;
+import pl.natusiek.grouptp.game.arena.Arena;
+import pl.natusiek.grouptp.game.arena.ArenaManager;
 
-import net.minecraft.server.v1_8_R3.WorldBorder;
+import java.text.DecimalFormat;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class DuringGamePlayerListener implements Listener {
 
-    private final GameArenaManager arenaManager;
+    private final ArenaManager arenaManager;
     private final DecimalFormat decimalFormat;
 
-    public DuringGamePlayerListener(GameArenaManager arenaManager) {
+    public DuringGamePlayerListener(ArenaManager arenaManager) {
         this.arenaManager = arenaManager;
         this.decimalFormat = new DecimalFormat("##.#");
     }
@@ -42,16 +40,16 @@ public class DuringGamePlayerListener implements Listener {
         if (event.getDamager() instanceof Projectile) {
 
             final Player player = ((Player) event.getEntity());
-            if (player instanceof Player) {
+            if (player != null) {
 
                 final Projectile projectile = ((Projectile) event.getDamager());
                 if (projectile instanceof Arrow) {
 
                     final Player shooter = ((Player) projectile.getShooter());
-                    if (shooter instanceof Player) {
+                    if (shooter != null) {
                         shooter.sendMessage(colored(MessagesConfig.ARENA$HP_OPPONENT
-                        .replace("{OPPONENT}", player.getName())
-                        .replace("{HP}", this.decimalFormat.format(player.getHealth() / 2))));
+                                .replace("{OPPONENT}", player.getName())
+                                .replace("{HP}", this.decimalFormat.format(player.getHealth() / 2))));
                     }
                 }
             }
@@ -68,7 +66,7 @@ public class DuringGamePlayerListener implements Listener {
 
         if (result.getType() == Material.JUKEBOX) {
             event.setCancelled(true);
-            event.setResult(Result.DENY);
+            event.setResult(Event.Result.DENY);
             if (event.getWhoClicked() instanceof Player) {
                 final Player player = ((Player) event.getWhoClicked());
                 player.sendMessage(colored("&4Nie mozesz craftowac jukeboxa!"));
@@ -79,11 +77,11 @@ public class DuringGamePlayerListener implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         final Player player = event.getPlayer();
-        final GameArena gameArena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+        final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
         final Block block = event.getBlock();
         if (block.getLocation().getBlockY() > MessagesConfig.BUILD$MAX_Y) {
-            if (!MessagesConfig.BUILD$ABOVE_CLOUDS || gameArena == null) {
+            if (!MessagesConfig.BUILD$ABOVE_CLOUDS || arena == null) {
                 event.setCancelled(true);
                 return;
             }
@@ -95,15 +93,15 @@ public class DuringGamePlayerListener implements Listener {
     @EventHandler
     public void onTeleportOutOfBorder(PlayerTeleportEvent event) {
         final Player player = event.getPlayer();
-        final GameArena gameArena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+        final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
-        if (gameArena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
+        if (arena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
             return;
         }
 
-        WorldBorder border = gameArena.getBorder(player.getUniqueId());
+        WorldBorder border = arena.getBorder(player.getUniqueId());
         if (border == null) {
-            border = gameArena.setBorder(player.getUniqueId(), gameArena.getCenter(), gameArena.getSize());
+            border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
         }
         final Location location = event.getTo();
         double size = border.getSize() / 2;

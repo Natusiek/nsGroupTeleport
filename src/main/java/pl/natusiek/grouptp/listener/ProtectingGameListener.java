@@ -9,37 +9,36 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import pl.natusiek.grouptp.game.arena.Arena;
+import pl.natusiek.grouptp.game.arena.ArenaManager;
+import pl.natusiek.grouptp.game.spectate.ArenaSpectate;
 
-import pl.natusiek.grouptp.basic.arena.GameArena;
-import pl.natusiek.grouptp.basic.arena.GameArenaManager;
-import pl.natusiek.grouptp.basic.spectate.GameSpectate;
 
 public class ProtectingGameListener implements Listener {
 
+    private final ArenaSpectate arenaSpectate;
+    private final ArenaManager arenaManager;
 
-    private final GameArenaManager arenaManager;
-    private final GameSpectate gameSpectate;
-
-    public ProtectingGameListener(GameArenaManager arenaManager, GameSpectate gameSpectate) {
+    public ProtectingGameListener(ArenaManager arenaManager, ArenaSpectate arenaSpectate) {
+        this.arenaSpectate = arenaSpectate;
         this.arenaManager = arenaManager;
-        this.gameSpectate = gameSpectate;
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
 
         final Player player = (Player) event.getEntity();
-        final GameArena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+        final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
         if (arena == null) {
             event.setCancelled(true);
-        } else if (this.gameSpectate.isPlaying(player.getUniqueId())) {
+        } else if (arena.isSpectators(player.getUniqueId())) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler
     public void onAttack(EntityDamageByEntityEvent event) {
         if (event.isCancelled()) return;
 
@@ -48,24 +47,24 @@ public class ProtectingGameListener implements Listener {
 
         if (victim instanceof Player && attacker instanceof Player) {
             final Player playerAttacker = (Player) attacker;
-            final GameArena arena = this.arenaManager.findArenaByPlayer(playerAttacker.getUniqueId());
+            final Arena arena = this.arenaManager.findArenaByPlayer(playerAttacker.getUniqueId());
 
             if (arena == null) {
                 event.setCancelled(true);
-            } else if (this.gameSpectate.isPlaying(playerAttacker.getUniqueId())) {
+            } else if (arena.isSpectators(playerAttacker.getUniqueId())) {
                 event.setCancelled(true);
             }
         }
     }
 
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler
     public void onItemDrop(PlayerPickupItemEvent event) {
         final Player player = event.getPlayer();
-        final GameArena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+        final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
         if (arena == null) {
             event.setCancelled(true);
-        } else if (this.gameSpectate.isPlaying(player.getUniqueId())) {
+        } else if (arena.isSpectators(player.getUniqueId())) {
             event.setCancelled(true);
         }
     }
@@ -74,11 +73,11 @@ public class ProtectingGameListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onItemPickup(PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
-        final GameArena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+        final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
         if (arena == null) {
             event.setCancelled(true);
-        } else if (this.gameSpectate.isPlaying(player.getUniqueId())) {
+        } else if (arena.isSpectators(player.getUniqueId())) {
             event.setCancelled(true);
         }
     }

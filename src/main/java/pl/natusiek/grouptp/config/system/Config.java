@@ -1,7 +1,8 @@
 package pl.natusiek.grouptp.config.system;
 
-import java.io.File;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
 
 public class Config implements Configuration {
 

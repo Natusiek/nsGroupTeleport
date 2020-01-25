@@ -5,17 +5,17 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import pl.natusiek.grouptp.basic.arena.GameArenaManager;
-import pl.natusiek.grouptp.basic.gui.KitInventoryProvider;
 import pl.natusiek.grouptp.config.MessagesConfig;
+import pl.natusiek.grouptp.game.arena.ArenaManager;
+import pl.natusiek.grouptp.game.gui.KitInventoryProvider;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class KitCommand implements CommandExecutor {
 
-    private final GameArenaManager arenaManager;
+    private final ArenaManager arenaManager;
 
-    public KitCommand(GameArenaManager arenaManager) {
+    public KitCommand(ArenaManager arenaManager) {
         this.arenaManager = arenaManager;
     }
 

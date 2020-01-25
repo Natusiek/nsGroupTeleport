@@ -1,11 +1,13 @@
 package pl.natusiek.grouptp.helper;
 
-import java.io.*;
-import java.util.Base64;
-
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 
 public class Serializer {
 
@@ -35,5 +37,4 @@ public class Serializer {
             throw new IOException("Unable to read class type", e);
         }
     }
-
 }

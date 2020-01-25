@@ -1,34 +1,24 @@
 package pl.natusiek.grouptp.helper;
 
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
+import pl.natusiek.grouptp.GroupTeleportPlugin;
+import pl.natusiek.grouptp.config.MessagesConfig;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Firework;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.plugin.Plugin;
-import pl.natusiek.grouptp.GroupTeleportPlugin;
-import pl.natusiek.grouptp.config.MessagesConfig;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
-public final class PlayerHelper {
-
-    private static GroupTeleportPlugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
+public class PlayerHelper {
 
     public static void spawnFirework(Location location) {
         final Firework firework = (Firework) location.getWorld().spawnEntity(location, EntityType.FIREWORK);
@@ -59,7 +49,7 @@ public final class PlayerHelper {
     public static void TeleportPlayerToServer(Player player, String server) {
         final ByteArrayOutputStream b = new ByteArrayOutputStream();
         final DataOutputStream output = new DataOutputStream(b);
-        final Plugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
+        final GroupTeleportPlugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
 
         player.sendMessage(colored(MessagesConfig.BUNGEE$MESSAGE_LEAVE));
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
@@ -78,11 +68,17 @@ public final class PlayerHelper {
     }
 
     public static void addItemFromLobby(Player player) {
+        player.setFireTicks(0);
+        player.setHealth(20.0D);
+        player.setFoodLevel(20);
+        player.setFallDistance(0);
+        player.setGameMode(GameMode.ADVENTURE);
         player.getInventory().clear();
         player.getInventory().setArmorContents(new ItemStack[4]);
-        player.getInventory().setItem(0, plugin.getConfigManager().getItemKits());
-        player.getInventory().setItem(3, plugin.getConfigManager().getItemSpectator());
-        player.getInventory().setItem(8, plugin.getConfigManager().getItemLeaveServer());
+        player.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 1.0f").toLocation());
+        player.getInventory().setItem(0, new ItemBuilder(Material.BOOK).withName("&8* &6Wybor zestaw'u &8*").build());
+        player.getInventory().setItem(4, new ItemBuilder(Material.COMPASS).withName("&8* &aObserwuj innych graczy &8*").build());
+        player.getInventory().setItem(8, new ItemBuilder(Material.FENCE_GATE).withName("&8* &cWyjscie z serwer'a &8*").build());
     }
 
 }

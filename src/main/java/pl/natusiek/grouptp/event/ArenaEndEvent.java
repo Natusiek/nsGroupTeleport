@@ -1,31 +1,30 @@
 package pl.natusiek.grouptp.event;
 
-import java.util.UUID;
-
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import pl.natusiek.grouptp.game.arena.Arena;
 
-import pl.natusiek.grouptp.basic.arena.GameArena;
+import java.util.UUID;
+
 
 public class ArenaEndEvent extends Event {
 
-  private final GameArena arena;
-  private final UUID winner;
+    private final Arena arena;
+    private final UUID winner;
 
-  private static final HandlerList handlerList = new HandlerList();
+    private static final HandlerList handlerList = new HandlerList();
 
-  public ArenaEndEvent(GameArena arena, UUID winner) {
-    this.arena = arena;
-    this.winner = winner;
-  }
-  
-  public GameArena getArena() { return arena; }
+    public ArenaEndEvent(Arena arena, UUID winner) {
+        this.arena = arena;
+        this.winner = winner;
+    }
 
-  public UUID getWinner() { return winner; }
+    public Arena getArena() { return arena; }
 
-  @Override
-  public HandlerList getHandlers() {  return handlerList; }
+    public UUID getWinner() { return winner; }
 
-  public static HandlerList getHandlerList() { return handlerList; }
+    @Override
+    public HandlerList getHandlers() {  return handlerList; }
 
+    public static HandlerList getHandlerList() { return handlerList; }
 }
