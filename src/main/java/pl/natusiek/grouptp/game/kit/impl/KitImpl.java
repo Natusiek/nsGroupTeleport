@@ -63,5 +63,4 @@ public class KitImpl implements Kit {
         int result = 31 * Arrays.hashCode(armorContent) + Arrays.hashCode(content);
         return result;
     }
-
 }

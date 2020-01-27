@@ -81,48 +81,4 @@ public class ItemBuilder {
 
         public ItemStack build() { return this.item; }
 
-        public static ItemBuilder withSection(ConfigurationSection section) {
-            final ItemBuilder builder = new ItemBuilder(Material.GRASS);
-
-            if (section.isString("material")) {
-                final Material material = Material.matchMaterial(section.getString("material"));
-                if (material != null) {
-                    builder.withType(material);
-                }
-            }
-            if (section.isString("name")) {
-                builder.withName(section.getString("name"));
-            }
-            if (section.isList("lore")) {
-                builder.withLore(section.getStringList("lore"));
-            }
-            if (section.isInt("amount")) {
-                builder.withAmount(section.getInt("amount"));
-            }
-            if (section.isInt("data") || section.isInt("durability")) {
-                builder.withDurability((short)section.getInt("data", section.getInt("durability")));
-            }
-            if (section.isList("enchants")) {
-                for (String enchant : section.getStringList("enchants")) {
-                    int level; String[] part = enchant.split(";");
-                    if (part.length < 1) {
-                        continue;
-                    }
-
-                    Enchantment enchantment = Enchantment.getByName(part[0]);
-                    if (enchantment == null) {
-                        continue;
-                    }
-                    try {
-                        level = Integer.parseInt(part[1]);
-                    }
-                    catch (NumberFormatException ex) {
-                        continue;
-                    }
-                    builder.addEnchantment(enchantment, level);
-                }
-            }
-            return builder;
-        }
-
 }

@@ -36,14 +36,12 @@ public class PlayerHelper {
     }
 
     public static List<Player> findPlayersInRadius(Player base, int radius, int limit) {
-        final List<Player> players = Bukkit.getOnlinePlayers()
+        return Bukkit.getOnlinePlayers()
                 .stream()
                 .filter(player ->
                         player.getLocation().distance(base.getLocation()) <= radius && !player.getUniqueId().equals(base.getUniqueId()))
                 .limit(limit)
                 .collect(Collectors.toCollection(() -> new ArrayList<>(limit)));
-
-        return players;
     }
 
     public static void TeleportPlayerToServer(Player player, String server) {

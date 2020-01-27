@@ -9,7 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 
-public class Serializer {
+public final class Serializer {
 
     public static String serializeInventory(ItemStack[] items) throws IllegalStateException {
         try {
@@ -37,4 +37,8 @@ public class Serializer {
             throw new IOException("Unable to read class type", e);
         }
     }
+
+    private Serializer() {
+    }
+
 }

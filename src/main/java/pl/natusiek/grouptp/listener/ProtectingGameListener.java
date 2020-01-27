@@ -31,11 +31,9 @@ public class ProtectingGameListener implements Listener {
         final Player player = (Player) event.getEntity();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
-        if (arena == null) {
-            event.setCancelled(true);
-        } else if (arena.isSpectators(player.getUniqueId())) {
-            event.setCancelled(true);
-        }
+        if (arena == null) event.setCancelled(true);
+        else if (arena.isSpectators(player.getUniqueId())) event.setCancelled(true);
+
     }
 
     @EventHandler
@@ -49,11 +47,9 @@ public class ProtectingGameListener implements Listener {
             final Player playerAttacker = (Player) attacker;
             final Arena arena = this.arenaManager.findArenaByPlayer(playerAttacker.getUniqueId());
 
-            if (arena == null) {
-                event.setCancelled(true);
-            } else if (arena.isSpectators(playerAttacker.getUniqueId())) {
-                event.setCancelled(true);
-            }
+            if (arena == null) event.setCancelled(true);
+            else if (arena.isSpectators(playerAttacker.getUniqueId())) event.setCancelled(true);
+
         }
     }
 
@@ -62,11 +58,9 @@ public class ProtectingGameListener implements Listener {
         final Player player = event.getPlayer();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
-        if (arena == null) {
-            event.setCancelled(true);
-        } else if (arena.isSpectators(player.getUniqueId())) {
-            event.setCancelled(true);
-        }
+        if (arena == null) event.setCancelled(true);
+        else if (arena.isSpectators(player.getUniqueId())) event.setCancelled(true);
+
     }
 
 
@@ -75,11 +69,9 @@ public class ProtectingGameListener implements Listener {
         final Player player = event.getPlayer();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
-        if (arena == null) {
-            event.setCancelled(true);
-        } else if (arena.isSpectators(player.getUniqueId())) {
-            event.setCancelled(true);
-        }
+        if (arena == null) event.setCancelled(true);
+        else if (arena.isSpectators(player.getUniqueId())) event.setCancelled(true);
+
     }
 
 }

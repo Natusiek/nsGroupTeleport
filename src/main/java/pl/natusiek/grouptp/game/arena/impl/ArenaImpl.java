@@ -41,16 +41,14 @@ public class ArenaImpl implements Arena {
         this.center = center;
         this.folder = new File(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getDataFolder(), "arenas");
         this.schematicFile = new File(this.folder, "map_" + this.name + ".schematic");
-        if (!this.folder.exists()) {
-            this.folder.mkdirs();
-        }
-        if (!this.schematicFile.exists()) {
-            try {
-                this.schematicFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (!this.folder.exists()) this.folder.mkdirs();
+            if (!this.schematicFile.exists()) {
+                try {
+                    this.schematicFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
     }
 
     @Override
@@ -59,7 +57,7 @@ public class ArenaImpl implements Arena {
         this.players.stream()
                 .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
-                .forEach(player -> {
+                .forEachOrdered(player -> {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.teleport(this.center.toLocation());
                     BorderHelper.setBorder(this, player, this.center, this.size);
@@ -80,24 +78,21 @@ public class ArenaImpl implements Arena {
                entity instanceof Item && entity.getLocation().distance(this.center.toLocation()) < this.size + MessagesConfig.ARENA$RADIUS$REMOVE_ITEMS)
                    .forEach(Entity::remove);
            this.players.clear();
+            SchematicHelper.pasteSchematic(this.schematicFile, this.center.toLocation(), true);
+            this.state = ArenaStates.AVAILABLE;
            this.spectators.stream()
                    .map(Bukkit::getPlayer)
-                   .forEach(players -> {
-                       Bukkit.broadcastMessage("elo");
+                   .forEachOrdered(players -> {
                        PlayerHelper.addItemFromLobby(players);
                        GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getSpectate().leaveSpectate(players);
                        players.sendMessage(colored(MessagesConfig.SPECTATOR$ARENA_CLOSE));
                        this.spectators.clear();
                    });
-           SchematicHelper.pasteSchematic(this.schematicFile, this.center.toLocation(), true);
-           this.state = ArenaStates.AVAILABLE;
         });
     }
 
     @Override
-    public List<UUID> getPlayers() {
-        return new ArrayList<>(players);
-    }
+    public List<UUID> getPlayers() { return new ArrayList<>(players); }
 
     @Override
     public List<UUID> getSpectators() { return new ArrayList<>(spectators); }
@@ -121,30 +116,22 @@ public class ArenaImpl implements Arena {
     public boolean isSpectators(UUID uuid) { return this.spectators.contains(uuid); }
 
     @Override
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
     @Override
-    public LocationHelper getCenter() {
-        return center;
-    }
+    public LocationHelper getCenter() { return center; }
 
     @Override
     public int getSize() { return size; }
 
     @Override
-    public int getState() {
-        return state;
-    }
+    public int getState() { return state; }
 
     @Override
     public void setState(int state) { this.state = state; }
 
     @Override
-    public WorldBorder getBorder(UUID uuid) {
-        return this.worldBorders.get(uuid);
-    }
+    public WorldBorder getBorder(UUID uuid) { return this.worldBorders.get(uuid); }
 
     @Override
     public WorldBorder setBorder(UUID uuid, LocationHelper center, int size) {

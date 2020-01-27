@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.kit.Kit;
+import pl.natusiek.grouptp.game.kit.KitManager;
 import pl.natusiek.grouptp.helper.ItemBuilder;
 import pl.natusiek.grouptp.helper.PlayerHelper;
 
@@ -26,12 +27,13 @@ public class KitInventoryProvider implements InventoryProvider {
             .title(colored("&7Wybierz swoj kit."))
             .build();
 
+
     @Override
     public void init(Player player, InventoryContents contents) {
         contents.fillBorders(ClickableItem.empty(new ItemStack(Material.STAINED_GLASS_PANE)));
 
         final GroupTeleportPlugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
-        plugin.getKitManager().getKits().forEach(kit -> {
+        plugin.getKitManager().getKits().forEach(kit ->
             contents.set(kit.getRows(), kit.getColumn(), ClickableItem.of(new ItemStack(kit.getIcon()), event -> {
                 final ItemStack clickedIcon = event.getCurrentItem();
                 if(clickedIcon == null) return;
@@ -47,8 +49,7 @@ public class KitInventoryProvider implements InventoryProvider {
                 plugin.getKitManager().fillInventoryByKit(player.getInventory(), clickedKit);
                 plugin.getKitManager().setCurrentKit(player.getUniqueId(), clickedKit);
                 player.sendMessage(colored(MessagesConfig.KIT$TAKE.replace("{KIT}", clickedKit.getName())));
-            }));
-        });
+            })));
         final ItemStack hopper = new ItemBuilder(Material.HOPPER).withName("&7Zresetuj swoj kit.").build();
         contents.set(2, 4, ClickableItem.of(new ItemStack(hopper), event -> {
             plugin.getKitManager().setCurrentKit(player.getUniqueId(), null);
@@ -56,8 +57,10 @@ public class KitInventoryProvider implements InventoryProvider {
         }));
     }
 
+
     @Override
     public void update(Player player, InventoryContents contents) {
 
     }
+
 }

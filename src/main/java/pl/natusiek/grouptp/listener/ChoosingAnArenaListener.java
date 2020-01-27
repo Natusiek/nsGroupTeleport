@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,6 +22,7 @@ import org.bukkit.material.Button;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.arena.Arena;
 import pl.natusiek.grouptp.game.arena.ArenaManager;
+import pl.natusiek.grouptp.game.gui.ArenaInfoInventoryProvider;
 import pl.natusiek.grouptp.game.gui.KitInventoryProvider;
 import pl.natusiek.grouptp.game.kit.Kit;
 import pl.natusiek.grouptp.game.kit.KitManager;
@@ -61,9 +63,9 @@ public class ChoosingAnArenaListener implements Listener {
         if (item == null) return;
 
         final Player player = event.getPlayer();
-        if (leaveServer.isSimilar(item)) {
+        if (this.leaveServer.isSimilar(item)) {
             PlayerHelper.TeleportPlayerToServer(player, MessagesConfig.BUNGEE$SERVER);
-        } else if (kitsOpenItem.isSimilar(item)) {
+        } else if (this.kitsOpenItem.isSimilar(item)) {
             KitInventoryProvider.INVENTORY.open(player);
         }
     }

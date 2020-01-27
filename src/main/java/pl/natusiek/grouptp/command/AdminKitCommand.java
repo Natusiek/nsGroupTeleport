@@ -63,10 +63,8 @@ public class AdminKitCommand implements CommandExecutor {
             }
             if (method.equalsIgnoreCase("delete")) {
                 if (args.length > 1) {
-                    final Kit kit = this.kitManager.findByName(args[1]);
                     this.dataSaver.delete(args[1]);
                     player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$DELETE));
-                    this.kitManager.deleteKit(new KitImpl(args[1], kit.getRows(), kit.getColumn(), kit.getIcon(), kit.getContent(), kit.getArmorContent()));
                 }
             }
         } else {

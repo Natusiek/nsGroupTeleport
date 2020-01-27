@@ -95,14 +95,12 @@ public class DuringGamePlayerListener implements Listener {
         final Player player = event.getPlayer();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
 
-        if (arena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) {
-            return;
-        }
+        if (arena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
+
 
         WorldBorder border = arena.getBorder(player.getUniqueId());
-        if (border == null) {
-            border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
-        }
+        if (border == null) border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
+
         final Location location = event.getTo();
         double size = border.getSize() / 2;
         double x = location.getX() - border.getCenterX(), z = location.getZ() - border.getCenterZ();

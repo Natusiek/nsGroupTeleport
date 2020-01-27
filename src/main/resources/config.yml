@@ -1,29 +1,3 @@
-spawn:
-  location: world, 0.0, 80.0, 0.0, 0.0f, 0.0f
-items:
-  kits:
-    material: BOOK
-    name: "&8* &fWybor zestawu &8*"
-  spectator:
-    material: PAPER
-    name: "&8* &fObserwuj areny &8*"
-  leave-server:
-    material: WOOD_BUTTON
-    name: "&8* &fOpusc serwer &8*"
-  leave-spectator:
-    material: NAME_TAG
-    name: "&8* &fOpusc obserwowanie areny &8*"
-  compass:
-    material: COMPASS
-    name: "&8 &fZnajdz pierwszego gracza &8*"
-blocks:
-  button: STONE_BUTTON
-  base: JUKE_BOX
-gui:
-  kit:
-    name: "&7Wybierz swoj kit"
-  spectator:
-    name: "&7Lista wszystkich aren"
 arenas:
   Arena1:
     size: 30

@@ -14,14 +14,6 @@ public class KitManagerImpl implements KitManager {
     private final Map<UUID, Kit> currentKits = new HashMap<>();
 
     @Override
-    public Kit findByName(String name) {
-        return this.kits.stream()
-                .filter(kit -> kit.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-    }
-
-    @Override
     public Kit findByIcon(ItemStack icon) {
         return this.kits.stream()
                 .filter(kit -> kit.getIcon().isSimilar(icon))
@@ -30,12 +22,10 @@ public class KitManagerImpl implements KitManager {
     }
 
     @Override
-    public Kit addKit(Kit kit) { this.kits.add(kit);
+    public Kit addKit(Kit kit) {
+        this.kits.add(kit);
         return kit;
     }
-
-    @Override
-    public void deleteKit(Kit kit) { this.kits.remove(kit); }
 
     @Override
     public List<Kit> getKits() { return new ArrayList<>(kits); }

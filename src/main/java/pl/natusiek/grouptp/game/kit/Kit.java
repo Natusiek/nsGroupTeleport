@@ -27,4 +27,6 @@ public interface Kit {
     ItemStack[] getArmorContent();
 
     void setArmorContent(ItemStack[] armorContent);
+
+    int hashCode();
 }

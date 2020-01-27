@@ -10,13 +10,9 @@ public interface KitManager {
 
     Kit findByIcon(ItemStack icon);
 
-    Kit findByName(String name);
-
     List<Kit> getKits();
 
     Kit addKit(Kit kit);
-
-    void deleteKit(Kit kit);
 
     void fillInventoryByKit(Inventory inventory, Kit kit);
 

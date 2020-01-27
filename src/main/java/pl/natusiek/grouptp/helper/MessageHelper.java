@@ -20,12 +20,9 @@ public final class MessageHelper {
                 .collect(Collectors.toList());
     }
 
-    public static void sendActionbar(Player player, String text) {
-        final IChatBaseComponent icbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + colored(text) + "\"}");
-        final PacketPlayOutChat bar = new PacketPlayOutChat(icbc, (byte) 2);
-        final CraftPlayer craftPlayer = ((CraftPlayer) player);
-
-        craftPlayer.getHandle().playerConnection.sendPacket(bar);
+    public static void sendActionbar(Player player, String message) {
+        final CraftPlayer craftPlayer = (CraftPlayer) player;
+        craftPlayer.getHandle().playerConnection.sendPacket(new PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + colored(message) + "\"}"), (byte)2));
     }
 
     private MessageHelper(){

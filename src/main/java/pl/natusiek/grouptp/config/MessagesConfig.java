@@ -41,7 +41,6 @@ public class MessagesConfig extends ConfigExtender {
 
     public static String COMMAND$ADMIN_KIT$USE = "&4Uzycie: &f/adminkit (create/delete) (name) (rows number) (column number)";
     public static String COMMAND$ADMIN_KIT$CREATED = "&fUtowrzyles kit o nazwie: &6{KIT}";
-    public static String COMMAND$ADMIN_KIT$ITEM_AIR = "&fNie trzymasz nic w rece.";
     public static String COMMAND$ADMIN_KIT$DELETE = "&fKit zostal usuniety";
 
     public static String COMMAND$SET_ARENA$USE = "&4Uzycie: &f/setarena (name) (size)";

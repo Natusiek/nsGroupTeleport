@@ -30,14 +30,12 @@ public class ClosingTheArenaListener implements Listener {
     private final KitManager kitManager;
     private final ArenaManager arenaManager;
 
-    private final Map<UUID, Long> cooldown = new HashMap<>();
-
     public ClosingTheArenaListener(KitManager kitManager, ArenaManager arenaManager) {
         this.kitManager = kitManager;
         this.arenaManager = arenaManager;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {
         final Player player = event.getPlayer();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
@@ -50,7 +48,7 @@ public class ClosingTheArenaListener implements Listener {
                 final UUID winnerId = arena.getPlayers().get(0);
                 final Player winner = Bukkit.getPlayer(winnerId);
                 if (winner != null) {
-                    closeArena(winner, player);
+                    closeArena(winner);
                     Bukkit.broadcastMessage(colored(MessagesConfig.ARENA$END_ARENA.replace("{WINNER}", winner.getName()).replace("{ARENA}", arena.getName())));
                 }
                 arena.removePlayer(winnerId);
@@ -59,11 +57,10 @@ public class ClosingTheArenaListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onQuit(PlayerDeathEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDeath(PlayerDeathEvent event) {
         final Player player = event.getEntity();
         final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
-        final GroupTeleportPlugin plugin = GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class);
         if (arena == null) return;
         arena.removePlayer(player.getUniqueId());
 
@@ -72,7 +69,7 @@ public class ClosingTheArenaListener implements Listener {
                 final UUID winnerId = arena.getPlayers().get(0);
                 final Player winner = Bukkit.getPlayer(winnerId);
                 if (winner != null) {
-                    closeArena(winner, player);
+                    closeArena(winner);
                     Bukkit.broadcastMessage(colored(MessagesConfig.ARENA$END_ARENA.replace("{WINNER}", winner.getName()).replace("{ARENA}", arena.getName())));
                 }
                 arena.removePlayer(winnerId);
@@ -81,36 +78,33 @@ public class ClosingTheArenaListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onRespawn(PlayerRespawnEvent event) {
         final Player player = event.getPlayer();
 
         PlayerHelper.addItemFromLobby(player);
+        this.kitManager.setCurrentKit(player.getUniqueId(), null);
         player.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
         BorderHelper.setBorder(player, player.getLocation(), 1000000);
     }
 
-    private void closeArena(Player winner, Player lost) {
+    private void closeArena(Player winner) {
         PlayerHelper.spawnFirework(winner.getLocation());
         Bukkit.getScheduler().runTaskLater(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class), () -> {
-            clearEffect(winner);
-            PlayerHelper.addItemFromLobby(winner);
+            winner.getActivePotionEffects()
+                    .stream()
+                    .map(PotionEffect::getType)
+                    .forEach(winner::removePotionEffect);
             winner.setGameMode(GameMode.ADVENTURE);
             winner.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
+            winner.sendTitle(" ", colored(" &aWygrales!"));
 
             this.kitManager.setCurrentKit(winner.getUniqueId(), null);
-            this.kitManager.setCurrentKit(lost.getUniqueId(), null);
 
+            PlayerHelper.addItemFromLobby(winner);
             BorderHelper.setBorder(winner, winner.getLocation(),1000000);
-            winner.sendTitle(" ", colored(" &aWygrales!"));
         }, 80L);
     }
 
-    private void clearEffect(Player player) {
-        player.getActivePotionEffects()
-                .stream()
-                .map(PotionEffect::getType)
-                .forEach(player::removePotionEffect);
-    }
 
 }

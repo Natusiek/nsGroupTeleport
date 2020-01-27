@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,60 +39,60 @@ public class SpectetorsArenaListener implements Listener {
 
     public SpectetorsArenaListener(ArenaManager arenaManager, ArenaSpectate arenaSpectate) {
         this.arenaManager = arenaManager;
-        this.arenaSpectate = arenaSpectate; }
+        this.arenaSpectate = arenaSpectate;
+    }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        final ItemStack item = event.getItem();
+        final Player player = event.getPlayer();
+        final ItemStack item = player.getItemInHand();
         if (item == null) return;
 
-        final Player player = event.getPlayer();
-        if (spectatorsOpenGui.isSimilar(item)) {
-            ArenaInfoInventoryProvider.INVENTORY.open(player);
-        } else if (leaveItem.isSimilar(item)) {
-            Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
-            arenaSpectate.leaveSpectate(player);
+        if (this.leaveItem.isSimilar(item)) {
+            final Arena arena = this.arenaManager.findArenaByPlayer(player.getUniqueId());
+            this.arenaSpectate.leaveSpectate(player);
             arena.removeSpectators(player.getUniqueId());
         }
-
-        else if (compass.isSimilar(item)) {
-            if (cooldown.containsKey(player.getUniqueId())) {
-                long time = cooldown.get(player.getUniqueId());
+        if (this.spectatorsOpenGui.isSimilar(item)) {
+            ArenaInfoInventoryProvider.INVENTORY.open(player);
+        }
+        if (this.compass.isSimilar(item)) {
+            if (this.cooldown.containsKey(player.getUniqueId())) {
+                long time = this.cooldown.get(player.getUniqueId());
                 if (time > System.currentTimeMillis()) {
                     player.sendMessage(colored(MessagesConfig.ARENA$COMPASS$COOLDOWN
-                            .replace("{TIME}", TimeUnit.MILLISECONDS.toSeconds(time - System.currentTimeMillis()) +"")));
+                            .replace("{TIME}", TimeUnit.MILLISECONDS.toSeconds(time - System.currentTimeMillis()) + "")));
                     return;
                 }
             }
-            cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (MessagesConfig.ARENA$COMPASS$TIME_COOLDOWND * 1000));
+            this.cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (MessagesConfig.ARENA$COMPASS$TIME_COOLDOWND * 1000));
 
             for (Player players : Bukkit.getOnlinePlayers()) {
+                double lastDistance = Double.POSITIVE_INFINITY;
                 Player result = null;
-                double lastDistance = Double.MAX_VALUE;
-                if (player.getName().equalsIgnoreCase(players.getName()) || !player.canSee(players)) {
-                    continue;
-                }
-                if (player.getLocation().distance(players.getLocation()) <= 100 && !player.getName().equalsIgnoreCase(players.getName())) {
-                    double distance = player.getLocation().distance(players.getLocation());
+                if (player.getName().equalsIgnoreCase(players.getName()) || !player.canSee(players)) continue;
 
-                    if (distance < lastDistance) {
-                        lastDistance = distance;
-                        result = players;
-                    }
+                double distance = player.getLocation().distance(players.getLocation());
+                if (distance <= 100 && !player.getName().equalsIgnoreCase(players.getName())) {
+                    if (distance > lastDistance) continue;
+                    lastDistance = distance;
+                    result = players;
                 }
-                if(result != null) {
-                    int distance = ((int) lastDistance);
+                if (result != null) {
+                    int distances = ((int) lastDistance);
                     MessageHelper.sendActionbar(player, MessagesConfig.ARENA$COMPASS$NEAREST_PLAYER
                             .replace("{RESULT}", result.getName())
-                            .replace("{DISTANCE}", "" + distance));
+                            .replace("{DISTANCE}", String.valueOf(distances)));
                     player.setCompassTarget(result.getLocation());
                 } else {
                     MessageHelper.sendActionbar(player, MessagesConfig.ARENA$COMPASS$NO_FOUND_PLAYER);
                     player.setCompassTarget(player.getLocation());
                 }
+
             }
         }
     }
+
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onQuit(PlayerQuitEvent event) {

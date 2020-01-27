@@ -23,22 +23,15 @@ import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class ArenaSpectateImpl implements ArenaSpectate {
 
-    private final ArenaManager arenaManager;
-
-    public ArenaSpectateImpl(ArenaManager arenaManager) {
-        this.arenaManager = arenaManager;
-    }
-
-    private final List<UUID> spectators = new ArrayList<>();
-
     @Override
     public void joinSpectate(Player player, Arena arena) {
         player.setAllowFlight(true);
         player.setFlying(true);
         player.getInventory().clear();
         player.getInventory().setArmorContents(new ItemStack[4]);
-        player.getInventory().setItem(0, new ItemBuilder(Material.COMPASS).withName("&8* &eZnajdz pobliskiego gracza &8* ").build());
-        player.getInventory().setItem(4, new ItemBuilder(Material.NAME_TAG).withName("&8* &4Opusc obserwowanie &8* ").addEnchantment(Enchantment.DURABILITY, 10).build());
+        player.getInventory().setItem(1, new ItemBuilder(Material.COMPASS).withName("&8* &aObserwuj innych graczy &8*").build());
+        player.getInventory().setItem(0, new ItemBuilder(Material.COMPASS).withName("&8* &eZnajdz pobliskiego gracza &8*").build());
+        player.getInventory().setItem(4, new ItemBuilder(Material.NAME_TAG).withName("&8* &4Opusc obserwowanie &8*").addEnchantment(Enchantment.DURABILITY, 10).build());
         BorderHelper.setBorder(arena, player, arena.getCenter(), arena.getSize());
         Bukkit.getOnlinePlayers().forEach(players -> players.hidePlayer(player));
         player.teleport(arena.getCenter().toLocation());

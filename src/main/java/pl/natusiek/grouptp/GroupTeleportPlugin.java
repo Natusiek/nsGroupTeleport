@@ -1,9 +1,13 @@
 package pl.natusiek.grouptp;
 
 import java.io.File;
+import java.util.Arrays;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import pl.natusiek.grouptp.command.AdminKitCommand;
@@ -38,7 +42,7 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
         this.arenaManager = new ArenaManagerImpl();
         this.arenaManager.getArenas().forEach(Arena::restart);
-        this.arenaSpectate = new ArenaSpectateImpl(arenaManager);
+        this.arenaSpectate = new ArenaSpectateImpl();
         this.kitManager = new KitManagerImpl();
 
         this.dataManager = new KitDataSaverImpl(this.kitManager);
@@ -54,11 +58,18 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        this.getServer().getPluginManager().registerEvents(new ChoosingAnArenaListener(this.kitManager, this.arenaManager), this);
-        this.getServer().getPluginManager().registerEvents(new ClosingTheArenaListener(this.kitManager, this.arenaManager), this);
-        this.getServer().getPluginManager().registerEvents(new DuringGamePlayerListener(this.arenaManager), this);
-        this.getServer().getPluginManager().registerEvents(new ProtectingGameListener(this.arenaManager, this.arenaSpectate), this);
-        this.getServer().getPluginManager().registerEvents(new SpectetorsArenaListener(arenaManager, this.arenaSpectate), this);
+        this.registerEvents(new ChoosingAnArenaListener(this.kitManager, this.arenaManager),
+                new ClosingTheArenaListener(this.kitManager, this.arenaManager),
+                new DuringGamePlayerListener(this.arenaManager),
+                new ProtectingGameListener(this.arenaManager, this.arenaSpectate),
+                new SpectetorsArenaListener(arenaManager, this.arenaSpectate));
+
+    }
+
+    private void registerEvents(final Listener... listeners) {
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+        Arrays.stream(listeners)
+                .forEachOrdered(listener ->  pluginManager.registerEvents(listener, this));
     }
 
     private void loadArenas() {

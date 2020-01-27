@@ -44,7 +44,7 @@ public class SetArenaCommand implements CommandExecutor {
                     plugin.reloadConfig();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    player.sendMessage(colored("&4Cos sie zjebalo, blad:" + e.getMessage()));
+                    player.sendMessage(colored("&4Cos sie popsulo, blad:" + e.getMessage()));
                 }
             } else {
                 player.sendMessage(colored(MessagesConfig.COMMAND$SET_ARENA$USE));

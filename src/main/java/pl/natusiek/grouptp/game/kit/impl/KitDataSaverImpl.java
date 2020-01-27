@@ -22,7 +22,8 @@ public class KitDataSaverImpl implements KitDataSaver {
 
     public KitDataSaverImpl(KitManager kitManager) { this.kitManager = kitManager; }
 
-    public Kit save(String name) {
+    @Override
+    public void save(String name) {
         this.kitManager.getKits().forEach(kit -> {
             final File file = new File(this.dir, name + ".yml");
             if (!file.exists()) {
@@ -47,26 +48,25 @@ public class KitDataSaverImpl implements KitDataSaver {
                 e.printStackTrace();
             }
         });
-        return null;
     }
 
-    public Kit delete(String name) {
+    @Override
+    public void delete(String name) {
         final File file = new File(this.dir, name + ".yml");
         if (file.exists()) {
             file.delete();
+            load();
         } else {
             plugin.getLogger().info("Nie ma takiego kitu ;c ");
         }
-        return null;
     }
 
+    @Override
     public void load() {
-        if (!this.plugin.getDataFolder().exists()) { this.plugin.getDataFolder().mkdirs();
-        }
-        if (!this.dir.exists()) { this.dir.mkdirs();
-        }
-        if (this.dir.listFiles() == null) { return;
-        }
+        if (!this.plugin.getDataFolder().exists()) this.plugin.getDataFolder().mkdirs();
+        if (!this.dir.exists())  this.dir.mkdirs();
+        if (this.dir.listFiles() == null)  return;
+
         for (File file : Objects.requireNonNull(this.dir.listFiles(), "Files are null")) {
             try {
                 FileConfiguration config = YamlConfiguration.loadConfiguration(file);
