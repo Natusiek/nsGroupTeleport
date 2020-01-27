@@ -66,7 +66,7 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
     }
 
-    private void registerEvents(final Listener... listeners) {
+    private void registerEvents(Listener... listeners) {
         final PluginManager pluginManager = Bukkit.getPluginManager();
         Arrays.stream(listeners)
                 .forEachOrdered(listener ->  pluginManager.registerEvents(listener, this));

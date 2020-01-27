@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group = 'pl.natusiek.grouptp'
-version = '1.0'
+group = pluginGroup
+version = pluginVersion
 
 repositories {
     maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
