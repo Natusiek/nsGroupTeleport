@@ -1,6 +1,5 @@
 package pl.natusiek.grouptp.listener;
 
-import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,6 +19,7 @@ import org.bukkit.inventory.Recipe;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.arena.Arena;
 import pl.natusiek.grouptp.game.arena.ArenaManager;
+import pl.natusiek.grouptp.helper.BorderHelper;
 
 import java.text.DecimalFormat;
 
@@ -98,7 +98,7 @@ public class DuringGamePlayerListener implements Listener {
         if (arena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
 
 
-        WorldBorder border = arena.getBorder(player.getUniqueId());
+        BorderHelper.WorldBorder border = arena.getBorder(player.getUniqueId());
         if (border == null) border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
 
         final Location location = event.getTo();

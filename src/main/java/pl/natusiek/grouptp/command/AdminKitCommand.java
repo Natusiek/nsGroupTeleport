@@ -48,12 +48,6 @@ public class AdminKitCommand implements CommandExecutor {
                         return false;
                     }
                     final Kit kit = this.kitManager.addKit(new KitImpl(args[1], rows, column, player.getItemInHand(), inventory.getContents(), inventory.getArmorContents()));
-                    kit.setName(args[1]);
-                    kit.setRows(rows);
-                    kit.setColumn(column);
-                    kit.setIcon(player.getItemInHand());
-                    kit.setContent(inventory.getContents());
-                    kit.setArmorContent(inventory.getArmorContents());
                     player.sendMessage(colored(MessagesConfig.COMMAND$ADMIN_KIT$CREATED).replace("{KIT}", args[1]));
                     this.dataSaver.save(kit.getName());
                     return true;

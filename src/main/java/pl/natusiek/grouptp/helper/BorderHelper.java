@@ -1,39 +1,83 @@
 package pl.natusiek.grouptp.helper;
 
-import net.minecraft.server.v1_8_R3.*;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import pl.natusiek.grouptp.game.arena.Arena;
 
-public final class BorderHelper {
+import java.lang.reflect.Constructor;
+
+public class BorderHelper {
 
     public static void setBorder(Arena arena, Player player, LocationHelper center, int radius) {
-        final WorldBorder border = arena.setBorder(player.getUniqueId(), center, radius);
+        setBorder(player, arena.setBorder(player.getUniqueId(), center, radius));
+    }
 
-        final Packet setSize = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_SIZE);
-        final Packet setCenter = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_CENTER);
+    private static void setBorder(Player player, WorldBorder border) {
+       try {
+            Object sizeEnum = ReflectionHelper.getNMSClass("PacketPlayOutWorldBorder").getDeclaredClasses()[1].getField("SET_SIZE").get(null);
+            Object centerEnum = ReflectionHelper.getNMSClass("PacketPlayOutWorldBorder").getDeclaredClasses()[1].getField("SET_CENTER").get(null);
 
-        final CraftPlayer craftPlayer = (CraftPlayer) player;
+            Constructor<?> packetConstructor = ReflectionHelper.getNMSClass("PacketPlayOutWorldBorder")
+                    .getConstructor(ReflectionHelper.getNMSClass("WorldBorder"), ReflectionHelper.getNMSClass("PacketPlayOutWorldBorder").getDeclaredClasses()[1]);
 
-        craftPlayer.getHandle().playerConnection.sendPacket(setSize);
-        craftPlayer.getHandle().playerConnection.sendPacket(setCenter);
+            Object sizePacket = packetConstructor.newInstance(border.getNMSBorder(), sizeEnum);
+            Object centerPacket = packetConstructor.newInstance(border.getNMSBorder(), centerEnum);
+
+
+            ReflectionHelper.sendPacket(player, sizePacket);
+            ReflectionHelper.sendPacket(player, centerPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setBorder(Player player, Location center, int radius) {
         final WorldBorder border = new WorldBorder();
+
         border.setCenter(center.getX(), center.getZ());
         border.setSize(radius);
-
-        final Packet setSize = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_SIZE);
-        final Packet setCenter = new PacketPlayOutWorldBorder(border, PacketPlayOutWorldBorder.EnumWorldBorderAction.SET_CENTER);
-        final CraftPlayer craftPlayer = (CraftPlayer) player;
-
-        craftPlayer.getHandle().playerConnection.sendPacket(setSize);
-        craftPlayer.getHandle().playerConnection.sendPacket(setCenter);
+        setBorder(player, border);
     }
 
-    private BorderHelper() {
+    public static class WorldBorder {
+        private double x,z, size;
+
+        public void setCenter(double x, double z) {
+            this.x = x;
+            this.z = z;
+        }
+
+        public void setSize(double size) {
+            this.size = size;
+        }
+
+        public double getCenterX() {
+            return x;
+        }
+
+        public double getCenterZ() {
+            return z;
+        }
+
+        public double getSize() {
+            return size;
+        }
+
+        public Object getNMSBorder() {
+            Object borderObject;
+            try {
+                borderObject = ReflectionHelper.getNMSClass("WorldBorder").getDeclaredConstructors()[0].newInstance();
+                borderObject.getClass().getMethod("setCenter", double.class, double.class).invoke(borderObject, x, z);
+                borderObject.getClass().getMethod("setSize", double.class).invoke(borderObject, size);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
+            }
+
+            return borderObject;
+        }
     }
+
 
 }
