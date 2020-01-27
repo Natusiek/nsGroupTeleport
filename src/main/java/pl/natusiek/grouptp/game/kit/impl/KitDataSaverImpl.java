@@ -33,6 +33,7 @@ public class KitDataSaverImpl implements KitDataSaver {
                     e.printStackTrace();
                 }
             }
+
             final FileConfiguration config = YamlConfiguration.loadConfiguration(file);
             config.set("name", kit.getName());
             config.set("rows", kit.getRows());

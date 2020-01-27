@@ -40,13 +40,13 @@ public class ArenaImpl implements Arena {
         this.folder = new File(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getDataFolder(), "arenas");
         this.schematicFile = new File(this.folder, "map_" + this.name + ".schematic");
         if (!this.folder.exists()) this.folder.mkdirs();
-            if (!this.schematicFile.exists()) {
-                try {
-                    this.schematicFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        if (!this.schematicFile.exists()) {
+            try {
+                this.schematicFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ArenaImpl implements Arena {
         this.players.stream()
                 .map(Bukkit::getPlayer)
                 .filter(Objects::nonNull)
-                .forEachOrdered(player -> {
+                .forEach(player -> {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.teleport(this.center.toLocation());
                     BorderHelper.setBorder(this, player, this.center, this.size);
@@ -70,22 +70,22 @@ public class ArenaImpl implements Arena {
     @Override
     public void restart() {
         Bukkit.getScheduler().runTask(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class), () -> {
-           this.center.toLocation().getWorld().getEntities()
-           .stream()
-           .filter(entity ->
-               entity instanceof Item && entity.getLocation().distance(this.center.toLocation()) < this.size + MessagesConfig.ARENA$RADIUS$REMOVE_ITEMS)
-                   .forEach(Entity::remove);
-           this.players.clear();
+            this.center.toLocation().getWorld().getEntities()
+                    .stream()
+                    .filter(entity -> entity instanceof Item && entity.getLocation().distance(this.center.toLocation()) < this.size + MessagesConfig.ARENA$RADIUS$REMOVE_ITEMS)
+                    .forEach(Entity::remove);
+            this.players.clear();
             SchematicHelper.pasteSchematic(this.schematicFile, this.center.toLocation(), true);
+            this.spectators.stream()
+                    .map(Bukkit::getPlayer)
+                    .filter(Objects::nonNull)
+                    .forEach(players -> {
+                        PlayerHelper.addItemFromLobby(players);
+                        GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getSpectate().leaveSpectate(players);
+                        players.sendMessage(colored(MessagesConfig.SPECTATOR$ARENA_CLOSE));
+                        this.spectators.clear();
+                    });
             this.state = ArenaStates.AVAILABLE;
-           this.spectators.stream()
-                   .map(Bukkit::getPlayer)
-                   .forEachOrdered(players -> {
-                       PlayerHelper.addItemFromLobby(players);
-                       GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getSpectate().leaveSpectate(players);
-                       players.sendMessage(colored(MessagesConfig.SPECTATOR$ARENA_CLOSE));
-                       this.spectators.clear();
-                   });
         });
     }
 

@@ -8,10 +8,10 @@ import java.util.Arrays;
 
 public class KitImpl implements Kit {
 
-    private String name;
-    private int rows, column;
-    private ItemStack icon;
-    private ItemStack[] content, armorContent;
+    private final String name;
+    private final int rows, column;
+    private final ItemStack icon;
+    private final ItemStack[] content, armorContent;
 
     public KitImpl(String name, int rows, int column, ItemStack icon, ItemStack[] content, ItemStack... armorContent) {
         this.name = name;

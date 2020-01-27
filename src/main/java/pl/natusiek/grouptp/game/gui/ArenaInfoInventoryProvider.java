@@ -52,9 +52,9 @@ public class ArenaInfoInventoryProvider implements InventoryProvider {
             } else {
                 final ItemStack close = new ItemBuilder(Material.WOOL).withDurability((short) 14)
                         .withName(" &8(&cOFF&8) &7Arena: &f" + arena.getName())
-                        .withLore(" ", " &7cArena jest zamknieta.", " ").build();
+                        .withLore(" ", " &cArena jest zamknieta.", " ").build();
                 contents.add(ClickableItem.of(new ItemStack(close), event -> {
-                    player.sendMessage(colored("&7Arena jest zamknięta."));
+                    player.sendMessage(colored("&7Arena jest zamknieta."));
                     player.closeInventory();
                 }));
             }

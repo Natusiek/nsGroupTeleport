@@ -15,7 +15,7 @@ public class MessagesConfig extends ConfigExtender {
     public static String ARENA$CANNOT_JOIN$NO_PLAYERS_IN_RADIUS = "&4Sory, &c ale brak graczy w poblizu lub nie maja tego samego zestawu!";
     public static String ARENA$CANNOT_USE_PEARL_OUTSIDE_BORDER = "&4Co ty taki Stiv? &cale nie wyrzucamy perel za border!";
 
-    public static String ARENA$COMPASS$COOLDOWN = "&cPoczekaj &f{TIME} &faby, uzyc kolejny raz! ";
+    public static String ARENA$COMPASS$COOLDOWN = "&cPoczekaj &f{TIME} &caby, uzyc kolejny raz! ";
     public static String ARENA$COMPASS$NO_FOUND_PLAYER = "&aNie znaleziono gracza w twoim poblizu.";
     public static String ARENA$COMPASS$NEAREST_PLAYER = "&aNajblizszy gracz: &f{RESULT} &aw odleglosci: {DISTANCE}";
     public static int ARENA$COMPASS$TIME_COOLDOWND = 3;

@@ -1,13 +1,12 @@
 package pl.natusiek.grouptp.helper;
 
-import net.minecraft.server.v1_8_R3.PacketPlayOutWorldBorder;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import pl.natusiek.grouptp.game.arena.Arena;
 
 import java.lang.reflect.Constructor;
 
-public class BorderHelper {
+public final class BorderHelper {
 
     public static void setBorder(Arena arena, Player player, LocationHelper center, int radius) {
         setBorder(player, arena.setBorder(player.getUniqueId(), center, radius));
@@ -77,6 +76,9 @@ public class BorderHelper {
 
             return borderObject;
         }
+    }
+
+    private BorderHelper(){
     }
 
 
