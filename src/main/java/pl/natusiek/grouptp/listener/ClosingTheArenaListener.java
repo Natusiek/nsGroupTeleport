@@ -1,6 +1,7 @@
 package pl.natusiek.grouptp.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,6 +11,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
+import org.github.paperspigot.Title;
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.arena.Arena;
@@ -97,7 +99,7 @@ public class ClosingTheArenaListener implements Listener {
                     .forEach(winner::removePotionEffect);
             winner.setGameMode(GameMode.ADVENTURE);
             winner.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
-            winner.sendTitle(" ", colored(" &aWygrales!"));
+            winner.sendTitle(new Title("", ChatColor.GREEN + "Wygrales!"));
 
             this.kitManager.setCurrentKit(winner.getUniqueId(), null);
 

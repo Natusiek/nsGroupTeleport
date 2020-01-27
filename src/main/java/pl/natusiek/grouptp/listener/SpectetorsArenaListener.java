@@ -80,12 +80,12 @@ public class SpectetorsArenaListener implements Listener {
                 }
                 if (result != null) {
                     int distances = ((int) lastDistance);
-                    MessageHelper.sendActionbar(player, MessagesConfig.ARENA$COMPASS$NEAREST_PLAYER
+                    MessageHelper.sendActionBar(player, MessagesConfig.ARENA$COMPASS$NEAREST_PLAYER
                             .replace("{RESULT}", result.getName())
                             .replace("{DISTANCE}", String.valueOf(distances)));
                     player.setCompassTarget(result.getLocation());
                 } else {
-                    MessageHelper.sendActionbar(player, MessagesConfig.ARENA$COMPASS$NO_FOUND_PLAYER);
+                    MessageHelper.sendActionBar(player, MessagesConfig.ARENA$COMPASS$NO_FOUND_PLAYER);
                     player.setCompassTarget(player.getLocation());
                 }
 

@@ -1,12 +1,10 @@
 package pl.natusiek.grouptp.game.arena.impl;
 
-import net.minecraft.server.v1_8_R3.Item;
-import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.arena.Arena;
@@ -31,7 +29,7 @@ public class ArenaImpl implements Arena {
 
     private final List<UUID> players = new ArrayList<>();
     private final List<UUID> spectators = new ArrayList<>();
-    private final Map<UUID, WorldBorder> worldBorders = new HashMap<>();
+    private final Map<UUID, BorderHelper.WorldBorder> worldBorders = new HashMap<>();
 
     private int state = ArenaStates.AVAILABLE;
 
@@ -131,13 +129,13 @@ public class ArenaImpl implements Arena {
     public void setState(int state) { this.state = state; }
 
     @Override
-    public WorldBorder getBorder(UUID uuid) { return this.worldBorders.get(uuid); }
+    public BorderHelper.WorldBorder getBorder(UUID uuid) { return this.worldBorders.get(uuid); }
 
     @Override
-    public WorldBorder setBorder(UUID uuid, LocationHelper center, int size) {
-        WorldBorder border = this.worldBorders.get(uuid);
+    public BorderHelper.WorldBorder setBorder(UUID uuid, LocationHelper center, int size) {
+        BorderHelper.WorldBorder border = this.worldBorders.get(uuid);
         if (border == null) {
-            this.worldBorders.put(uuid, border = new WorldBorder());
+            this.worldBorders.put(uuid, border = new BorderHelper.WorldBorder());
         }
         border.setCenter(center.toLocation().getX(), center.toLocation().getZ());
         border.setSize(size);

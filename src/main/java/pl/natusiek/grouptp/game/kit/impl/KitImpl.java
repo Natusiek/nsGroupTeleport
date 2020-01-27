@@ -26,37 +26,19 @@ public class KitImpl implements Kit {
     public String getName() { return name; }
 
     @Override
-    public void setName(String name) { this.name = name; }
-
-    @Override
     public int getRows() { return rows; }
-
-    @Override
-    public void setRows(int rows) { this.rows = rows; }
 
     @Override
     public int getColumn() { return column; }
 
     @Override
-    public void setColumn(int column) { this.column = column; }
-
-    @Override
     public ItemStack getIcon() { return icon; }
-
-    @Override
-    public void setIcon(ItemStack icon) { this.icon = icon; }
 
     @Override
     public ItemStack[] getContent() { return content; }
 
     @Override
-    public void setContent(ItemStack[] content) { this.content = content; }
-
-    @Override
     public ItemStack[] getArmorContent() { return armorContent; }
-
-    @Override
-    public void setArmorContent(ItemStack[] armorContent) { this.armorContent = armorContent; }
 
     @Override
     public int hashCode() {
