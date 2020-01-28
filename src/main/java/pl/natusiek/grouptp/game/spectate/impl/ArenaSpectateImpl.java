@@ -25,11 +25,10 @@ public class ArenaSpectateImpl implements ArenaSpectate {
 
     @Override
     public void joinSpectate(Player player, Arena arena) {
-        player.setAllowFlight(true);
         player.setFlying(true);
+        player.setAllowFlight(true);
         player.getInventory().clear();
         player.getInventory().setArmorContents(new ItemStack[4]);
-        player.getInventory().setItem(1, new ItemBuilder(Material.COMPASS).withName("&8* &aObserwuj innych graczy &8*").build());
         player.getInventory().setItem(0, new ItemBuilder(Material.COMPASS).withName("&8* &eZnajdz pobliskiego gracza &8*").build());
         player.getInventory().setItem(4, new ItemBuilder(Material.NAME_TAG).withName("&8* &4Opusc obserwowanie &8*").addEnchantment(Enchantment.DURABILITY, 10).build());
         BorderHelper.setBorder(arena, player, arena.getCenter(), arena.getSize());
@@ -46,8 +45,7 @@ public class ArenaSpectateImpl implements ArenaSpectate {
         PlayerHelper.addItemFromLobby(player);
         BorderHelper.setBorder(player, player.getLocation(), 1000000);
         player.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
-        player.sendMessage(colored("&8(&4BETA&8) &7OBSERWOWANIA AREN!"));
-        player.sendMessage(colored("    &8&l* &fJezeli masz blad to wbij na dc.pvpcloud.pl"));
+
         Bukkit.getOnlinePlayers().forEach(players -> players.showPlayer(player));
     }
 }

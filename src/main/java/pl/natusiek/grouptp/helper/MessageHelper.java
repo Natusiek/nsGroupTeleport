@@ -22,7 +22,6 @@ public final class MessageHelper {
 
 
     public static void sendActionBar(Player player, String message) {
-        //ALE KOX
         message = colored(message);
         String nmsVersion = (nmsVersion = Bukkit.getServer().getClass().getPackage().getName()).substring(nmsVersion.lastIndexOf(".") + 1);
         try {
@@ -46,4 +45,8 @@ public final class MessageHelper {
             ex.printStackTrace();
         }
     }
+
+    private MessageHelper(){
+    }
+
 }

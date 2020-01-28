@@ -37,19 +37,27 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (this.getServer().getPluginManager().getPlugin("WorldEdit") == null) {getPluginLoader().disablePlugin(this); }
+        if (this.getServer().getPluginManager().getPlugin("SmartInvs") == null) {
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
+
         this.saveDefaultConfig();
         ConfigHelper.create(new File(this.getDataFolder(), "messages.yml"), MessagesConfig.class);
+
 
         this.arenaManager = new ArenaManagerImpl();
         this.arenaManager.getArenas().forEach(Arena::restart);
         this.arenaSpectate = new ArenaSpectateImpl();
+
         this.kitManager = new KitManagerImpl();
+        this.getServer().getLogger().info("Zaladowanych kitow: " + this.kitManager.getKits().size());
 
         this.dataManager = new KitDataSaverImpl(this.kitManager);
         this.dataManager.load();
 
         this.loadArenas();
-        this.getServer().getLogger().info("Zaladowanych kitow: " + this.kitManager.getKits().size());
         this.getServer().getLogger().info("Zaladowanych aren: " + this.arenaManager.getArenas().size());
 
         this.getCommand("kit").setExecutor(new KitCommand(this.arenaManager));
@@ -58,7 +66,8 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 
-        this.registerEvents(new ChoosingAnArenaListener(this.kitManager, this.arenaManager),
+        this.registerEvents(
+                new ChoosingAnArenaListener(this.kitManager, this.arenaManager),
                 new ClosingTheArenaListener(this.kitManager, this.arenaManager),
                 new DuringGamePlayerListener(this.arenaManager),
                 new ProtectingGameListener(this.arenaManager, this.arenaSpectate),
