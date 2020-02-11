@@ -8,8 +8,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.config.MessagesConfig;
-import pl.natusiek.grouptp.helper.Helper;
-import pl.natusiek.grouptp.helper.LocationHelper;
 
 import java.io.File;
 import java.io.IOException;

@@ -12,7 +12,6 @@ import pl.natusiek.grouptp.game.gui.KitInventoryProvider;
 import pl.natusiek.grouptp.game.kit.KitDataSaver;
 import pl.natusiek.grouptp.game.kit.KitManager;
 import pl.natusiek.grouptp.game.kit.impl.KitImpl;
-import pl.natusiek.grouptp.helper.Helper;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
