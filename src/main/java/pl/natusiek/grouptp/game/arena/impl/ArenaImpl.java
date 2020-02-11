@@ -1,5 +1,6 @@
 package pl.natusiek.grouptp.game.arena.impl;
 
+import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -25,11 +26,11 @@ public class ArenaImpl implements Arena {
     private final String name;
     private final int size;
     private final LocationHelper center;
-    private final File schematicFile, folder;
+    private final File schematicFile;
 
     private final List<UUID> players = new ArrayList<>();
     private final List<UUID> spectators = new ArrayList<>();
-    private final Map<UUID, BorderHelper.WorldBorder> worldBorders = new HashMap<>();
+    private final Map<UUID, WorldBorder> worldBorders = new HashMap<>();
 
     private int state = ArenaStates.AVAILABLE;
 
@@ -37,9 +38,10 @@ public class ArenaImpl implements Arena {
         this.name = name;
         this.size = size;
         this.center = center;
-        this.folder = new File(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getDataFolder(), "arenas");
-        this.schematicFile = new File(this.folder, "map_" + this.name + ".schematic");
-        if (!this.folder.exists()) this.folder.mkdirs();
+
+        final File folder = new File(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getDataFolder(), "arenas");
+        this.schematicFile = new File(folder, "map_" + this.name + ".schematic");
+        if (!folder.exists()) folder.mkdirs();
         if (!this.schematicFile.exists()) {
             try {
                 this.schematicFile.createNewFile();
@@ -54,7 +56,6 @@ public class ArenaImpl implements Arena {
         this.state = ArenaStates.IN_GAME;
         this.players.stream()
                 .map(Bukkit::getPlayer)
-                .filter(Objects::nonNull)
                 .forEach(player -> {
                     player.setGameMode(GameMode.SURVIVAL);
                     player.teleport(this.center.toLocation());
@@ -69,22 +70,21 @@ public class ArenaImpl implements Arena {
 
     @Override
     public void restart() {
+        SchematicHelper.pasteSchematic(this.schematicFile, this.center.toLocation(), true);
         Bukkit.getScheduler().runTask(GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class), () -> {
             this.center.toLocation().getWorld().getEntities()
                     .stream()
                     .filter(entity -> entity instanceof Item && entity.getLocation().distance(this.center.toLocation()) < this.size + MessagesConfig.ARENA$RADIUS$REMOVE_ITEMS)
                     .forEach(Entity::remove);
             this.players.clear();
-            SchematicHelper.pasteSchematic(this.schematicFile, this.center.toLocation(), true);
             this.spectators.stream()
                     .map(Bukkit::getPlayer)
-                    .filter(Objects::nonNull)
                     .forEach(players -> {
                         PlayerHelper.addItemFromLobby(players);
                         GroupTeleportPlugin.getPlugin(GroupTeleportPlugin.class).getSpectate().leaveSpectate(players);
                         players.sendMessage(colored(MessagesConfig.SPECTATOR$ARENA_CLOSE));
-                        this.spectators.clear();
                     });
+            this.spectators.clear();
             this.state = ArenaStates.AVAILABLE;
         });
     }
@@ -129,13 +129,13 @@ public class ArenaImpl implements Arena {
     public void setState(int state) { this.state = state; }
 
     @Override
-    public BorderHelper.WorldBorder getBorder(UUID uuid) { return this.worldBorders.get(uuid); }
+    public WorldBorder getBorder(UUID uuid) { return this.worldBorders.get(uuid); }
 
     @Override
-    public BorderHelper.WorldBorder setBorder(UUID uuid, LocationHelper center, int size) {
-        BorderHelper.WorldBorder border = this.worldBorders.get(uuid);
+    public WorldBorder setBorder(UUID uuid, LocationHelper center, int size) {
+        WorldBorder border = this.worldBorders.get(uuid);
         if (border == null) {
-            this.worldBorders.put(uuid, border = new BorderHelper.WorldBorder());
+            this.worldBorders.put(uuid, border = new WorldBorder());
         }
         border.setCenter(center.toLocation().getX(), center.toLocation().getZ());
         border.setSize(size);

@@ -7,6 +7,8 @@ import java.util.UUID;
 
 public interface ArenaManager {
 
+    void loadArenas();
+
     void addArena(Arena arena);
 
     List<Arena> getArenas();

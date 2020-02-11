@@ -16,11 +16,9 @@ import pl.natusiek.grouptp.game.spectate.ArenaSpectate;
 
 public class ProtectingGameListener implements Listener {
 
-    private final ArenaSpectate arenaSpectate;
     private final ArenaManager arenaManager;
 
-    public ProtectingGameListener(ArenaManager arenaManager, ArenaSpectate arenaSpectate) {
-        this.arenaSpectate = arenaSpectate;
+    public ProtectingGameListener(ArenaManager arenaManager) {
         this.arenaManager = arenaManager;
     }
 

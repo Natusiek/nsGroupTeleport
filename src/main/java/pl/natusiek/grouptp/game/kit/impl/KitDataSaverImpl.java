@@ -25,6 +25,7 @@ public class KitDataSaverImpl implements KitDataSaver {
     @Override
     public void save(String name) {
         this.kitManager.getKits().forEach(kit -> {
+
             final File file = new File(this.dir, name + ".yml");
             if (!file.exists()) {
                 try {
@@ -34,19 +35,17 @@ public class KitDataSaverImpl implements KitDataSaver {
                 }
             }
 
-            final FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-            config.set("name", kit.getName());
-            config.set("rows", kit.getRows());
-            config.set("column", kit.getColumn());
-            config.set("icon", kit.getIcon());
-            config.set("inventory", Serializer.serializeInventory(kit.getContent()));
-            config.set("armor", Serializer.serializeInventory(kit.getArmorContent()));
-
+            final FileConfiguration configuration = YamlConfiguration.loadConfiguration(file);
+            configuration.set("name", kit.getName());
+            configuration.set("rows", kit.getRows());
+            configuration.set("column", kit.getColumn());
+            configuration.set("icon", kit.getIcon());
+            configuration.set("inventory", Serializer.serializeInventory(kit.getContent()));
+            configuration.set("armor", Serializer.serializeInventory(kit.getArmorContent()));
             try {
-                config.save(file);
-                this.kitManager.addKit(new KitImpl(kit.getName(), kit.getRows(), kit.getColumn(), kit.getIcon(), kit.getContent(), kit.getArmorContent()));
-            } catch (IOException e) {
-                e.printStackTrace();
+                configuration.save(file);
+            } catch (IOException ex) {
+                throw new RuntimeException("Cannot save player equipment data!", ex);
             }
         });
     }
@@ -54,11 +53,14 @@ public class KitDataSaverImpl implements KitDataSaver {
     @Override
     public void delete(String name) {
         final File file = new File(this.dir, name + ".yml");
+
         if (file.exists()) {
-            file.delete();
-            load();
-        } else {
-            plugin.getLogger().info("Nie ma takiego kitu ;c ");
+            try {
+                file.delete();
+                plugin.getLogger().info("Usunieto kit: " + name);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

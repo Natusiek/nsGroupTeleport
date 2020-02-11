@@ -1,5 +1,6 @@
 package pl.natusiek.grouptp.listener;
 
+import net.minecraft.server.v1_8_R3.WorldBorder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,50 +20,27 @@ import org.bukkit.inventory.Recipe;
 import pl.natusiek.grouptp.config.MessagesConfig;
 import pl.natusiek.grouptp.game.arena.Arena;
 import pl.natusiek.grouptp.game.arena.ArenaManager;
-import pl.natusiek.grouptp.helper.BorderHelper;
 
-import java.text.DecimalFormat;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
 
 public class DuringGamePlayerListener implements Listener {
 
     private final ArenaManager arenaManager;
-    private final DecimalFormat decimalFormat;
 
     public DuringGamePlayerListener(ArenaManager arenaManager) {
         this.arenaManager = arenaManager;
-        this.decimalFormat = new DecimalFormat("##.#");
-    }
-
-    @EventHandler
-    public void onShootBow(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Projectile) {
-
-            final Player player = ((Player) event.getEntity());
-            if (player != null) {
-
-                final Projectile projectile = ((Projectile) event.getDamager());
-                if (projectile instanceof Arrow) {
-
-                    final Player shooter = ((Player) projectile.getShooter());
-                    if (shooter != null) {
-                        shooter.sendMessage(colored(MessagesConfig.ARENA$HP_OPPONENT
-                                .replace("{OPPONENT}", player.getName())
-                                .replace("{HP}", this.decimalFormat.format(player.getHealth() / 2))));
-                    }
-                }
-            }
-        }
     }
 
     @EventHandler
     public void onCraftJukeBox(CraftItemEvent event) {
         final Recipe recipe = event.getRecipe();
-        if (recipe == null) return;
+        if (recipe == null)
+            return;
 
         final ItemStack result = recipe.getResult();
-        if (result == null) return;
+        if (result == null)
+            return;
 
         if (result.getType() == Material.JUKEBOX) {
             event.setCancelled(true);
@@ -97,9 +75,9 @@ public class DuringGamePlayerListener implements Listener {
 
         if (arena == null || event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
 
-
-        BorderHelper.WorldBorder border = arena.getBorder(player.getUniqueId());
-        if (border == null) border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
+        WorldBorder border = arena.getBorder(player.getUniqueId());
+        if (border == null)
+            border = arena.setBorder(player.getUniqueId(), arena.getCenter(), arena.getSize());
 
         final Location location = event.getTo();
         double size = border.getSize() / 2;

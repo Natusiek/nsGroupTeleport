@@ -4,13 +4,14 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import pl.natusiek.grouptp.command.AdminKitCommand;
 import pl.natusiek.grouptp.command.KitCommand;
 import pl.natusiek.grouptp.command.SetArenaCommand;
 import pl.natusiek.grouptp.config.MessagesConfig;
@@ -37,8 +38,13 @@ public final class GroupTeleportPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (this.getServer().getPluginManager().getPlugin("WorldEdit") == null) {getPluginLoader().disablePlugin(this); }
+        if (this.getServer().getPluginManager().getPlugin("WorldEdit") == null) {
+            getLogger().warning("not found: WorldEdit ");
+            getPluginLoader().disablePlugin(this);
+            return;
+        }
         if (this.getServer().getPluginManager().getPlugin("SmartInvs") == null) {
+            getLogger().warning("not found: SmartInvs ");
             getPluginLoader().disablePlugin(this);
             return;
         }
@@ -46,22 +52,21 @@ public final class GroupTeleportPlugin extends JavaPlugin {
         this.saveDefaultConfig();
         ConfigHelper.create(new File(this.getDataFolder(), "messages.yml"), MessagesConfig.class);
 
-
         this.arenaManager = new ArenaManagerImpl();
         this.arenaManager.getArenas().forEach(Arena::restart);
-        this.arenaSpectate = new ArenaSpectateImpl();
+        this.arenaManager.loadArenas();
 
         this.kitManager = new KitManagerImpl();
-        this.getServer().getLogger().info("Zaladowanych kitow: " + this.kitManager.getKits().size());
+        this.getLogger().info("Zaladowanych kitow: " + this.kitManager.getKits().size());
+
+        this.arenaSpectate = new ArenaSpectateImpl();
 
         this.dataManager = new KitDataSaverImpl(this.kitManager);
         this.dataManager.load();
 
-        this.loadArenas();
-        this.getServer().getLogger().info("Zaladowanych aren: " + this.arenaManager.getArenas().size());
+        this.getLogger().info("Zaladowanych aren: " + this.arenaManager.getArenas().size());
 
-        this.getCommand("kit").setExecutor(new KitCommand(this.arenaManager));
-        this.getCommand("adminkit").setExecutor(new AdminKitCommand(this.kitManager, this.dataManager));
+        this.getCommand("kit").setExecutor(new KitCommand(this.arenaManager, this.kitManager, dataManager));
         this.getCommand("setarena").setExecutor(new SetArenaCommand(this));
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -70,26 +75,14 @@ public final class GroupTeleportPlugin extends JavaPlugin {
                 new ChoosingAnArenaListener(this.kitManager, this.arenaManager),
                 new ClosingTheArenaListener(this.kitManager, this.arenaManager),
                 new DuringGamePlayerListener(this.arenaManager),
-                new ProtectingGameListener(this.arenaManager, this.arenaSpectate),
-                new SpectetorsArenaListener(arenaManager, this.arenaSpectate));
-
+                new ProtectingGameListener(this.arenaManager),
+                new SpectetorsArenaListener(this.arenaManager, this.arenaSpectate));
     }
 
     private void registerEvents(Listener... listeners) {
         final PluginManager pluginManager = Bukkit.getPluginManager();
         Arrays.stream(listeners)
                 .forEachOrdered(listener ->  pluginManager.registerEvents(listener, this));
-    }
-
-    private void loadArenas() {
-        final FileConfiguration config = this.getConfig();
-
-        config.getConfigurationSection("arenas").getKeys(false).forEach(name -> {
-            final ConfigurationSection section = config.getConfigurationSection("arenas." + name);
-            final int size = section.getInt("size", 50);
-            final LocationHelper center = LocationHelper.fromString(section.getString("location", "world, 100.0, 80.0, 100.0, 0.0f, 1.0f"));
-            this.arenaManager.addArena(new ArenaImpl(name, size, center));
-        });
     }
 
     public ArenaManager getArenaManager() { return arenaManager; }

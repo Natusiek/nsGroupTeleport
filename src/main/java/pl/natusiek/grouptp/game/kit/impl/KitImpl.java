@@ -13,7 +13,7 @@ public class KitImpl implements Kit {
     private final ItemStack icon;
     private final ItemStack[] content, armorContent;
 
-    public KitImpl(String name, int rows, int column, ItemStack icon, ItemStack[] content, ItemStack... armorContent) {
+    public KitImpl(String name, int rows, int column, ItemStack icon, ItemStack[] content, ItemStack[] armorContent) {
         this.name = name;
         this.rows = rows;
         this.column = column;
@@ -42,7 +42,7 @@ public class KitImpl implements Kit {
 
     @Override
     public int hashCode() {
-        int result = 31 * Arrays.hashCode(armorContent) + Arrays.hashCode(content);
-        return result;
+        return 31 * Arrays.hashCode(content) + Arrays.hashCode(armorContent);
     }
+
 }

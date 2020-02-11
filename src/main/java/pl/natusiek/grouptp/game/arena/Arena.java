@@ -1,5 +1,6 @@
 package pl.natusiek.grouptp.game.arena;
 
+import net.minecraft.server.v1_8_R3.WorldBorder;
 import pl.natusiek.grouptp.helper.BorderHelper;
 import pl.natusiek.grouptp.helper.LocationHelper;
 
@@ -38,9 +39,9 @@ public interface Arena {
 
     void setState(int state);
 
-    BorderHelper.WorldBorder getBorder(UUID uuid);
+    WorldBorder getBorder(UUID uuid);
 
-    BorderHelper.WorldBorder setBorder(UUID uuid, LocationHelper center, int size);
+    WorldBorder setBorder(UUID uuid, LocationHelper center, int size);
 
     final class ArenaStates {
 

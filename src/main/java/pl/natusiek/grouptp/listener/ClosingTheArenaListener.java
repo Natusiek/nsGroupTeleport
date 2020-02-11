@@ -21,8 +21,6 @@ import pl.natusiek.grouptp.helper.BorderHelper;
 import pl.natusiek.grouptp.helper.LocationHelper;
 import pl.natusiek.grouptp.helper.PlayerHelper;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static pl.natusiek.grouptp.helper.MessageHelper.colored;
@@ -50,7 +48,7 @@ public class ClosingTheArenaListener implements Listener {
                 final UUID winnerId = arena.getPlayers().get(0);
                 final Player winner = Bukkit.getPlayer(winnerId);
                 if (winner != null) {
-                    closeArena(winner);
+                    this.closeArena(winner);
                     Bukkit.broadcastMessage(colored(MessagesConfig.ARENA$END_ARENA.replace("{WINNER}", winner.getName()).replace("{ARENA}", arena.getName())));
                 }
                 arena.removePlayer(winnerId);
@@ -71,7 +69,7 @@ public class ClosingTheArenaListener implements Listener {
                 final UUID winnerId = arena.getPlayers().get(0);
                 final Player winner = Bukkit.getPlayer(winnerId);
                 if (winner != null) {
-                    closeArena(winner);
+                    this.closeArena(winner);
                     Bukkit.broadcastMessage(colored(MessagesConfig.ARENA$END_ARENA.replace("{WINNER}", winner.getName()).replace("{ARENA}", arena.getName())));
                 }
                 arena.removePlayer(winnerId);
@@ -86,9 +84,10 @@ public class ClosingTheArenaListener implements Listener {
 
         PlayerHelper.addItemFromLobby(player);
         this.kitManager.setCurrentKit(player.getUniqueId(), null);
-        player.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
+        player.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 1.0f").toLocation());
         BorderHelper.setBorder(player, player.getLocation(), 1000000);
     }
+
 
     private void closeArena(Player winner) {
         PlayerHelper.spawnFirework(winner.getLocation());
@@ -98,7 +97,7 @@ public class ClosingTheArenaListener implements Listener {
                     .map(PotionEffect::getType)
                     .forEach(winner::removePotionEffect);
             winner.setGameMode(GameMode.ADVENTURE);
-            winner.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 0.0f").toLocation());
+            winner.teleport(LocationHelper.fromString("world, 200.0, 80.0, 200.0, 0.0f, 1.0f").toLocation());
             winner.sendTitle(new Title("", ChatColor.GREEN + "Wygrales!"));
 
             this.kitManager.setCurrentKit(winner.getUniqueId(), null);

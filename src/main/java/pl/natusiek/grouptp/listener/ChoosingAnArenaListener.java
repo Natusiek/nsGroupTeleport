@@ -63,11 +63,12 @@ public class ChoosingAnArenaListener implements Listener {
         if (item == null) return;
 
         final Player player = event.getPlayer();
-        if (this.leaveServer.isSimilar(item)) {
+        if (leaveServer.isSimilar(item))
             PlayerHelper.TeleportPlayerToServer(player, MessagesConfig.BUNGEE$SERVER);
-        } else if (this.kitsOpenItem.isSimilar(item)) {
+
+        else if (kitsOpenItem.isSimilar(item))
             KitInventoryProvider.INVENTORY.open(player);
-        }
+
     }
 
     @EventHandler
@@ -88,6 +89,7 @@ public class ChoosingAnArenaListener implements Listener {
                 return;
             }
             this.cooldown.put(player.getUniqueId(), System.currentTimeMillis() + (MessagesConfig.ARENA$SEARCHING$COOLDOWN * 1000));
+
             final Kit kit = this.kitManager.getCurrentKit(player.getUniqueId());
             if (kit == null) {
                 player.sendMessage(colored(MessagesConfig.KIT$DONT_HAVE_KIT));

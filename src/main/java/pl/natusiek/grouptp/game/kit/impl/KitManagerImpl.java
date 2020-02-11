@@ -10,7 +10,7 @@ import java.util.*;
 
 public class KitManagerImpl implements KitManager {
 
-    private final List<Kit> kits = new ArrayList<>();
+    private final Set<Kit> kits = new HashSet<>();
     private final Map<UUID, Kit> currentKits = new HashMap<>();
 
     @Override
@@ -22,9 +22,21 @@ public class KitManagerImpl implements KitManager {
     }
 
     @Override
-    public Kit addKit(Kit kit) {
+    public Kit findByName(String name) {
+        return this.kits.stream()
+                .filter(kit -> kit.getName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public void addKit(Kit kit) {
         this.kits.add(kit);
-        return kit;
+    }
+
+    @Override
+    public void removeKit(Kit kit) {
+        this.kits.remove(kit);
     }
 
     @Override

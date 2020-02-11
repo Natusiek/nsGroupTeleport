@@ -8,6 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import pl.natusiek.grouptp.GroupTeleportPlugin;
 import pl.natusiek.grouptp.config.MessagesConfig;
+import pl.natusiek.grouptp.helper.Helper;
+import pl.natusiek.grouptp.helper.LocationHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,16 +26,11 @@ public class SetArenaCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         final Player player = ((Player) sender);
         if (player.hasPermission("nsGroupTeleport.setarena")) {
+            if (args.length > 1) {
 
-            if (args.length < 2) {
                 final String arenaName = args[0];
-                int arenaSize = 20;
-                try {
-                    arenaSize = Integer.parseInt(args[1]);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    player.sendMessage(colored(MessagesConfig.COMMAND$NO_INT));
-                }
+                int arenaSize = Integer.parseInt(args[1]);
+
                 final Location location = player.getLocation();
                 final ConfigurationSection section = plugin.getConfig().createSection("arenas." + arenaName);
                 section.set(".size", arenaSize);
@@ -41,10 +38,8 @@ public class SetArenaCommand implements CommandExecutor {
                 try {
                     plugin.getConfig().save(new File(plugin.getDataFolder(), "config.yml"));
                     player.sendMessage(colored(MessagesConfig.COMMAND$SET_ARENA$ADD));
-                    plugin.reloadConfig();
                 } catch (IOException e) {
                     e.printStackTrace();
-                    player.sendMessage(colored("&4Cos sie popsulo, blad:" + e.getMessage()));
                 }
             } else {
                 player.sendMessage(colored(MessagesConfig.COMMAND$SET_ARENA$USE));

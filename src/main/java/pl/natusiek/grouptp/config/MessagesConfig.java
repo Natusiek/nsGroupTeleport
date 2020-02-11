@@ -9,7 +9,6 @@ public class MessagesConfig extends ConfigExtender {
 
     public static String ARENA$JOINED = "&aDolaczyles do areny: &6{ARENA}&a, grasz z: &f{PLAYERS}";
     public static String ARENA$END_ARENA = "&aGratki! &fArene &e{ARENA} &fwygral &e{WINNER}";
-    public static String ARENA$HP_OPPONENT = "&7{OPPONENT} zostalo mu: &c{HP}";
     public static String ARENA$CANNOT_JOIN$COOLDOWN = "&4Nie spamuj tak! &cWyszukiwac arene mozesz co &f{TIME} sekund&c!";
     public static String ARENA$CANNOT_JOIN$NO_AVAILABLE_ARENAS = "&4Sory, &cale dobry serwer i nie ma wolnych aren!";
     public static String ARENA$CANNOT_JOIN$NO_PLAYERS_IN_RADIUS = "&4Sory, &c ale brak graczy w poblizu lub nie maja tego samego zestawu!";
@@ -37,7 +36,6 @@ public class MessagesConfig extends ConfigExtender {
     public static String SPECTATOR$ARENA_CLOSE = "&fArena zakonczyla sie zostales przeteleportowany na spawna";
 
     public static String COMMAND$NO_PERMISSION = "&4Upsik, ale nie masz permisji.";
-    public static String COMMAND$NO_INT = "&4Upsik, podany argument nie jest liczba";
 
     public static String COMMAND$ADMIN_KIT$USE = "&4Uzycie: &f/adminkit (create/delete) (name) (rows number) (column number)";
     public static String COMMAND$ADMIN_KIT$CREATED = "&fUtowrzyles kit o nazwie: &6{KIT}";
